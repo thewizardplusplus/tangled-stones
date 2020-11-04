@@ -3,8 +3,20 @@ package.path = "/sdcard/lovegame/vendor/?.lua;"
   .. "./vendor/?.lua;"
   .. "./vendor/?/init.lua"
 
+local windfield = require("windfield")
+
+local world = nil -- love.physics.World
+
+function love.load()
+  world = windfield.newWorld(0, 9.8, true)
+end
+
 function love.draw()
-  love.graphics.print("Hello, world!", 100, 100)
+  world:draw()
+end
+
+function love.update(dt)
+  world:update(dt)
 end
 
 function love.keypressed(key)
