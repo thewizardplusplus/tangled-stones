@@ -56,6 +56,15 @@ function love.load()
     width = grid_step,
     height = height,
   })
+
+  -- stone
+  makeRectangle(world, {
+    kind = "dynamic",
+    x = x + (width - grid_step) / 2,
+    y = y + (height - grid_step) / 2,
+    width = grid_step,
+    height = grid_step,
+  })
 end
 
 function love.draw()
