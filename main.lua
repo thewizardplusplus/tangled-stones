@@ -7,8 +7,55 @@ local windfield = require("windfield")
 
 local world = nil -- love.physics.World
 
+local function makeRectangle(world, options)
+  local rectangle = world:newRectangleCollider(
+    options.x,
+    options.y,
+    options.width,
+    options.height
+  )
+  rectangle:setType(options.kind)
+
+  return rectangle
+end
+
 function love.load()
   world = windfield.newWorld(0, 9.8, true)
+
+  local x, y, width, height = love.window.getSafeArea()
+  local grid_step = height / 10
+  -- top
+  makeRectangle(world, {
+    kind = "static",
+    x = x + grid_step,
+    y = y,
+    width = width - 2 * grid_step,
+    height = grid_step,
+  })
+  -- bottom
+  makeRectangle(world, {
+    kind = "static",
+    x = x + grid_step,
+    y = y + height - grid_step,
+    width = width - 2 * grid_step,
+    height = grid_step,
+  })
+  -- left
+  makeRectangle(world, {
+    kind = "static",
+    x = x,
+    y = y,
+    width = grid_step,
+    height = height,
+  })
+  -- right
+  makeRectangle(world, {
+    kind = "static",
+    x = x + width - grid_step,
+    y = y,
+    width = grid_step,
+    height = height,
+  })
 end
 
 function love.draw()
