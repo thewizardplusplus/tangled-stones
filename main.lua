@@ -89,6 +89,14 @@ function love.load()
       prev_stone = stone
     end
   end
+
+  makeRectangle(world, {
+    kind = "dynamic",
+    x = x + grid_step,
+    y = y + height - 2 * grid_step,
+    width = grid_step,
+    height = grid_step,
+  })
 end
 
 function love.draw()
@@ -119,12 +127,17 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y)
+  local first_dynamic_collider = nil
   local colliders = world:queryCircleArea(x, y, 1.5 * grid_step / 2)
-  if #colliders == 0 then
-    return
+  for _, collider in ipairs(colliders) do
+    if collider.body:getType() == "dynamic" then
+      first_dynamic_collider = collider
+      break
+    end
   end
-
-  joint = world:addJoint("MouseJoint", colliders[1], x, y) 
+  if first_dynamic_collider then
+    joint = world:addJoint("MouseJoint", first_dynamic_collider, x, y)
+  end
 end
 
 function love.mousereleased()
