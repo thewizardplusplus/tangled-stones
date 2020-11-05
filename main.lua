@@ -6,6 +6,8 @@ package.path = "/sdcard/lovegame/vendor/?.lua;"
 local windfield = require("windfield")
 
 local world = nil -- love.physics.World
+local stone = nil -- windfield.RectangleCollider
+local joint = nil -- love.physics.MouseJoint
 
 local function makeRectangle(world, options)
   local rectangle = world:newRectangleCollider(
@@ -58,7 +60,7 @@ function love.load()
   })
 
   -- stone
-  makeRectangle(world, {
+  stone = makeRectangle(world, {
     kind = "dynamic",
     x = x + (width - grid_step) / 2,
     y = y + (height - grid_step) / 2,
@@ -72,6 +74,10 @@ function love.draw()
 end
 
 function love.update(dt)
+  if joint and not joint:isDestroyed() then
+    joint:setTarget(love.mouse.getPosition())
+  end
+
   world:update(dt)
 end
 
@@ -79,4 +85,12 @@ function love.keypressed(key)
   if key == "escape" then
     love.event.quit()
   end
+end
+
+function love.mousepressed(x, y)
+  joint = world:addJoint("MouseJoint", stone, x, y) 
+end
+
+function love.mousereleased()
+  joint:destroy()
 end
