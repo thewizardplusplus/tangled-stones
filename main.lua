@@ -69,10 +69,10 @@ function love.load()
   })
 
   -- stones
+  local stones = {}
   local stones_side_count = 5
   local stones_x = x + width / 2 - stones_side_count * grid_step / 2
   local stones_y = y + height / 2 - stones_side_count * grid_step / 2
-  local prev_stone = nil
   for row = 0, stones_side_count - 1 do
     for column = 0, stones_side_count - 1 do
       local stone = makeRectangle(world, {
@@ -82,23 +82,33 @@ function love.load()
         width = grid_step,
         height = grid_step,
       })
-      if prev_stone then
-        local x1, y1 = prev_stone:getPosition()
-        local x2, y2 = stone:getPosition()
-        world:addJoint(
-          "RopeJoint",
-          prev_stone,
-          stone,
-          x1, y1,
-          x2, y2,
-          getVectorLength(x1, y1, x2, y2),
-          true
-        )
+      table.insert(stones, stone)
+    end
+  end
+  -- Fisher-Yates shuffle
+  for i = 1, #stones do
+    local j = math.random(i, #stones)
+    stones[i], stones[j] = stones[j], stones[i]
+  end
 
-        prev_stone = nil
-      else
-        prev_stone = stone
-      end
+  local prev_stone = nil
+  for _, stone in ipairs(stones) do
+    if prev_stone then
+      local x1, y1 = prev_stone:getPosition()
+      local x2, y2 = stone:getPosition()
+      world:addJoint(
+        "RopeJoint",
+        prev_stone,
+        stone,
+        x1, y1,
+        x2, y2,
+        getVectorLength(x1, y1, x2, y2),
+        true
+      )
+
+      prev_stone = nil
+    else
+      prev_stone = stone
     end
   end
 end
