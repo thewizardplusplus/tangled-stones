@@ -69,32 +69,36 @@ function love.load()
   })
 
   -- stones
-  local stone_count = 4
+  local stones_side_count = 5
+  local stones_x = x + width / 2 - stones_side_count * grid_step / 2
+  local stones_y = y + height / 2 - stones_side_count * grid_step / 2
   local prev_stone = nil
-  for i = 1, stone_count do
-    local stone = makeRectangle(world, {
-      kind = "dynamic",
-      x = x + width / (stone_count + 1) * i - grid_step / 2,
-      y = y + (height - grid_step) / 2,
-      width = grid_step,
-      height = grid_step,
-    })
-    if prev_stone then
-      local x1, y1 = prev_stone:getPosition()
-      local x2, y2 = stone:getPosition()
-      world:addJoint(
-        "RopeJoint",
-        prev_stone,
-        stone,
-        x1, y1,
-        x2, y2,
-        getVectorLength(x1, y1, x2, y2),
-        true
-      )
+  for row = 0, stones_side_count - 1 do
+    for column = 0, stones_side_count - 1 do
+      local stone = makeRectangle(world, {
+        kind = "dynamic",
+        x = stones_x + column * grid_step,
+        y = stones_y + row * grid_step,
+        width = grid_step,
+        height = grid_step,
+      })
+      if prev_stone then
+        local x1, y1 = prev_stone:getPosition()
+        local x2, y2 = stone:getPosition()
+        world:addJoint(
+          "RopeJoint",
+          prev_stone,
+          stone,
+          x1, y1,
+          x2, y2,
+          getVectorLength(x1, y1, x2, y2),
+          true
+        )
 
-      prev_stone = nil
-    else
-      prev_stone = stone
+        prev_stone = nil
+      else
+        prev_stone = stone
+      end
     end
   end
 end
