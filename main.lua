@@ -21,6 +21,10 @@ local function makeRectangle(world, options)
   return rectangle
 end
 
+local function isJointValid(joint)
+  return joint and not joint:isDestroyed()
+end
+
 function love.load()
   world = windfield.newWorld(0, 9.8, true)
   world:setQueryDebugDrawing(true)
@@ -105,7 +109,7 @@ function love.draw()
 end
 
 function love.update(dt)
-  if joint and not joint:isDestroyed() then
+  if isJointValid(joint) then
     joint:setTarget(love.mouse.getPosition())
   end
 
@@ -133,7 +137,7 @@ function love.mousepressed(x, y)
 end
 
 function love.mousereleased()
-  if joint and not joint:isDestroyed() then
+  if isJointValid(joint) then
     joint:destroy()
   end
 end
