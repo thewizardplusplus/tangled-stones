@@ -21,6 +21,10 @@ local function makeRectangle(world, options)
   return rectangle
 end
 
+local function getVectorLength(x1, y1, x2, y2)
+  return math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
+end
+
 local function isJointValid(joint)
   return joint and not joint:isDestroyed()
 end
@@ -84,7 +88,7 @@ function love.load()
         stone,
         x1, y1,
         x2, y2,
-        math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2),
+        getVectorLength(x1, y1, x2, y2),
         true
       )
 
