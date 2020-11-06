@@ -8,6 +8,7 @@ local windfield = require("windfield")
 local world = nil -- love.physics.World
 local grid_step = 0
 local stones = {}
+local stones_joints = {}
 local joint = nil -- love.physics.MouseJoint
 
 local function makeRectangle(world, options)
@@ -112,6 +113,9 @@ function love.load()
         true
       )
 
+      stones_joints[prev_stone] = stone
+      stones_joints[stone] = prev_stone
+
       prev_stone = nil
     else
       prev_stone = stone
@@ -159,14 +163,17 @@ function love.mousepressed(x, y)
       break
     end
   end
+
+  local first_dynamic_collider_pair = nil
   if first_dynamic_collider then
     joint = world:addJoint("MouseJoint", first_dynamic_collider, x, y)
+    first_dynamic_collider_pair = stones_joints[first_dynamic_collider]
   end
 
   for _, stone in ipairs(stones) do
-    if first_dynamic_collider and stone == first_dynamic_collider then
-      stone.body:setType("dynamic")
-    else
+    local should_be_static = stone ~= first_dynamic_collider
+      and stone ~= first_dynamic_collider_pair
+    if should_be_static then
       stone.body:setType("static")
     end
   end
