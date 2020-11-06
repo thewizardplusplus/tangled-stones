@@ -30,7 +30,7 @@ local function isJointValid(joint)
 end
 
 function love.load()
-  world = windfield.newWorld(0, 9.8, true)
+  world = windfield.newWorld(0, 0, true)
   world:setQueryDebugDrawing(true)
 
   local x, y, width, height = love.window.getSafeArea()
