@@ -89,14 +89,6 @@ function love.load()
       prev_stone = stone
     end
   end
-
-  makeRectangle(world, {
-    kind = "dynamic",
-    x = x + grid_step,
-    y = y + height - 2 * grid_step,
-    width = grid_step,
-    height = grid_step,
-  })
 end
 
 function love.draw()
