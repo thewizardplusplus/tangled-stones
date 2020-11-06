@@ -21,6 +21,14 @@ local function makeRectangle(world, options)
   return rectangle
 end
 
+local function shuffle(array)
+  -- Fisher-Yates shuffle
+  for i = 1, #array do
+    local j = math.random(i, #array)
+    array[i], array[j] = array[j], array[i]
+  end
+end
+
 local function getVectorLength(x1, y1, x2, y2)
   return math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
 end
@@ -87,11 +95,7 @@ function love.load()
       table.insert(stones, stone)
     end
   end
-  -- Fisher-Yates shuffle
-  for i = 1, #stones do
-    local j = math.random(i, #stones)
-    stones[i], stones[j] = stones[j], stones[i]
-  end
+  shuffle(stones)
 
   local prev_stone = nil
   for _, stone in ipairs(stones) do
