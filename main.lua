@@ -30,6 +30,8 @@ local function isJointValid(joint)
 end
 
 function love.load()
+  math.randomseed(os.time())
+
   world = windfield.newWorld(0, 0, true)
   world:setQueryDebugDrawing(true)
 
