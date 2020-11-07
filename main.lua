@@ -10,6 +10,8 @@ local grid_step = 0
 local stones = {}
 local stones_joints = {}
 local joint = nil -- love.physics.MouseJoint
+local first_dynamic_collider = nil
+local first_dynamic_collider_pair = nil
 
 local function makeRectangle(world, options)
   local rectangle = world:newRectangleCollider(
@@ -155,7 +157,7 @@ function love.mousepressed(x, y)
     stone.body:setType("dynamic")
   end
 
-  local first_dynamic_collider = nil
+  first_dynamic_collider = nil
   local colliders = world:queryCircleArea(x, y, 1.5 * grid_step / 2)
   for _, collider in ipairs(colliders) do
     if collider.body:getType() == "dynamic" then
@@ -164,7 +166,7 @@ function love.mousepressed(x, y)
     end
   end
 
-  local first_dynamic_collider_pair = nil
+  first_dynamic_collider_pair = nil
   if first_dynamic_collider then
     joint = world:addJoint("MouseJoint", first_dynamic_collider, x, y)
     first_dynamic_collider_pair = stones_joints[first_dynamic_collider]
@@ -182,5 +184,14 @@ end
 function love.mousereleased()
   if isJointValid(joint) then
     joint:destroy()
+  end
+
+  for _, stone in ipairs({
+    first_dynamic_collider,
+    first_dynamic_collider_pair,
+  }) do
+    if stone then
+      stone.body:setType("static")
+    end
   end
 end
