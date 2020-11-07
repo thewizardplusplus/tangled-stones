@@ -7,11 +7,11 @@ local windfield = require("windfield")
 
 local world = nil -- love.physics.World
 local grid_step = 0
-local stones = {}
-local stones_joints = {}
-local joint = nil -- love.physics.MouseJoint
-local first_dynamic_collider = nil
-local first_dynamic_collider_pair = nil
+local stones = {} -- array<windfield.Collider>
+local stones_joints = {} -- map<windfield.Collider, windfield.Collider>
+local selection_joint = nil -- love.physics.MouseJoint
+local selected_stone = nil -- windfield.Collider
+local selected_stone_pair = nil -- windfield.Collider
 
 local function makeRectangle(world, options)
   local rectangle = world:newRectangleCollider(
@@ -149,8 +149,8 @@ function love.draw()
 end
 
 function love.update(dt)
-  if isJointValid(joint) then
-    joint:setTarget(love.mouse.getPosition())
+  if isJointValid(selection_joint) then
+    selection_joint:setTarget(love.mouse.getPosition())
   end
 
   world:update(dt)
@@ -165,36 +165,35 @@ end
 function love.mousepressed(x, y)
   setCollidersKind(stones, "dynamic")
 
-  first_dynamic_collider = nil
+  selected_stone = nil
   local minimal_distance = math.huge
   local colliders = world:queryCircleArea(x, y, 1.5 * grid_step / 2)
   for _, collider in ipairs(colliders) do
     if collider.body:getType() == "dynamic" then
       local distance = getVectorLength(x, y, collider:getPosition())
       if distance < minimal_distance then
-        first_dynamic_collider = collider
+        selected_stone = collider
         minimal_distance = distance
       end
     end
   end
 
-  first_dynamic_collider_pair = nil
-  if first_dynamic_collider then
-    joint = world:addJoint("MouseJoint", first_dynamic_collider, x, y)
-    first_dynamic_collider_pair = stones_joints[first_dynamic_collider]
+  selected_stone_pair = nil
+  if selected_stone then
+    selection_joint = world:addJoint("MouseJoint", selected_stone, x, y)
+    selected_stone_pair = stones_joints[selected_stone]
   end
 
   setCollidersKind(stones, "static", function(stone)
-    return stone ~= first_dynamic_collider
-      and stone ~= first_dynamic_collider_pair
+    return stone ~= selected_stone and stone ~= selected_stone_pair
   end)
 end
 
 function love.mousereleased()
-  if isJointValid(joint) then
-    joint:destroy()
+  if isJointValid(selection_joint) then
+    selection_joint:destroy()
   end
 
-  local selected_stones = {first_dynamic_collider, first_dynamic_collider_pair}
+  local selected_stones = {selected_stone, selected_stone_pair}
   setCollidersKind(selected_stones, "static")
 end
