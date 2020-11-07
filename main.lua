@@ -41,6 +41,16 @@ local function isJointValid(joint)
   return joint and not joint:isDestroyed()
 end
 
+local function setCollidersKind(colliders, kind, filter)
+  filter = filter or function() return true end
+
+  for _, collider in ipairs(colliders) do
+    if filter(collider) then
+      collider.body:setType(kind)
+    end
+  end
+end
+
 function love.load()
   math.randomseed(os.time())
 
@@ -153,9 +163,7 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y)
-  for _, stone in ipairs(stones) do
-    stone.body:setType("dynamic")
-  end
+  setCollidersKind(stones, "dynamic")
 
   first_dynamic_collider = nil
   local minimal_distance = math.huge
@@ -176,13 +184,10 @@ function love.mousepressed(x, y)
     first_dynamic_collider_pair = stones_joints[first_dynamic_collider]
   end
 
-  for _, stone in ipairs(stones) do
-    local should_be_static = stone ~= first_dynamic_collider
+  setCollidersKind(stones, "static", function(stone)
+    return stone ~= first_dynamic_collider
       and stone ~= first_dynamic_collider_pair
-    if should_be_static then
-      stone.body:setType("static")
-    end
-  end
+  end)
 end
 
 function love.mousereleased()
@@ -190,12 +195,6 @@ function love.mousereleased()
     joint:destroy()
   end
 
-  for _, stone in ipairs({
-    first_dynamic_collider,
-    first_dynamic_collider_pair,
-  }) do
-    if stone then
-      stone.body:setType("static")
-    end
-  end
+  local selected_stones = {first_dynamic_collider, first_dynamic_collider_pair}
+  setCollidersKind(selected_stones, "static")
 end
