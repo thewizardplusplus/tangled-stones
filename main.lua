@@ -4,6 +4,7 @@ package.path = "/sdcard/lovegame/vendor/?.lua;"
   .. "./vendor/?/init.lua"
 
 local windfield = require("windfield")
+local mlib = require("mlib")
 
 local world = nil -- love.physics.World
 local grid_step = 0
@@ -31,10 +32,6 @@ local function shuffle(array)
     local j = math.random(i, #array)
     array[i], array[j] = array[j], array[i]
   end
-end
-
-local function getVectorLength(x1, y1, x2, y2)
-  return math.sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2)
 end
 
 local function isJointValid(joint)
@@ -121,7 +118,7 @@ function love.load()
         stone,
         x1, y1,
         x2, y2,
-        getVectorLength(x1, y1, x2, y2),
+        mlib.line.getLength(x1, y1, x2, y2),
         true
       )
 
@@ -170,7 +167,7 @@ function love.mousepressed(x, y)
   local colliders = world:queryCircleArea(x, y, 1.5 * grid_step / 2)
   for _, collider in ipairs(colliders) do
     if collider.body:getType() == "dynamic" then
-      local distance = getVectorLength(x, y, collider:getPosition())
+      local distance = mlib.line.getLength(x, y, collider:getPosition())
       if distance < minimal_distance then
         selected_stone = collider
         minimal_distance = distance
