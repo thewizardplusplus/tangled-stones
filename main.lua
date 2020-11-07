@@ -158,11 +158,15 @@ function love.mousepressed(x, y)
   end
 
   first_dynamic_collider = nil
+  local minimal_distance = math.huge
   local colliders = world:queryCircleArea(x, y, 1.5 * grid_step / 2)
   for _, collider in ipairs(colliders) do
     if collider.body:getType() == "dynamic" then
-      first_dynamic_collider = collider
-      break
+      local distance = getVectorLength(x, y, collider:getPosition())
+      if distance < minimal_distance then
+        first_dynamic_collider = collider
+        minimal_distance = distance
+      end
     end
   end
 
