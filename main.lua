@@ -35,6 +35,56 @@ local function shuffle(array)
   end
 end
 
+local function makeStones(
+  world,
+  side_count,
+  grid_step,
+  offset_x,
+  offset_y
+)
+  local stones = {}
+  for row = 0, side_count - 1 do
+    for column = 0, side_count - 1 do
+      local stone = makeRectangle(world, {
+        kind = "static",
+        x = offset_x + column * grid_step,
+        y = offset_y + row * grid_step,
+        width = grid_step,
+        height = grid_step,
+      })
+      table.insert(stones, stone)
+    end
+  end
+  shuffle(stones)
+
+  local stones_joints = {}
+  local prev_stone = nil
+  for _, stone in ipairs(stones) do
+    if prev_stone then
+      local x1, y1 = prev_stone:getPosition()
+      local x2, y2 = stone:getPosition()
+      world:addJoint(
+        "RopeJoint",
+        prev_stone,
+        stone,
+        x1, y1,
+        x2, y2,
+        mlib.line.getLength(x1, y1, x2, y2),
+        true
+      )
+
+      stones_joints[prev_stone] = stone
+      stones_joints[stone] = prev_stone
+
+      prev_stone = nil
+    else
+      prev_stone = stone
+    end
+  end
+
+  return stones, stones_joints
+end
+
 local function isEntityValid(entity)
   return entity and not entity:isDestroyed()
 end
@@ -101,45 +151,15 @@ function love.load()
 
   -- stones
   local stones_side_count = 5
-  local stones_x = x + width / 2 - stones_side_count * grid_step / 2
-  local stones_y = y + height / 2 - stones_side_count * grid_step / 2
-  for row = 0, stones_side_count - 1 do
-    for column = 0, stones_side_count - 1 do
-      local stone = makeRectangle(world, {
-        kind = "static",
-        x = stones_x + column * grid_step,
-        y = stones_y + row * grid_step,
-        width = grid_step,
-        height = grid_step,
-      })
-      table.insert(stones, stone)
-    end
-  end
-  shuffle(stones)
-
-  local prev_stone = nil
-  for _, stone in ipairs(stones) do
-    if prev_stone then
-      local x1, y1 = prev_stone:getPosition()
-      local x2, y2 = stone:getPosition()
-      world:addJoint(
-        "RopeJoint",
-        prev_stone,
-        stone,
-        x1, y1,
-        x2, y2,
-        mlib.line.getLength(x1, y1, x2, y2),
-        true
-      )
-
-      stones_joints[prev_stone] = stone
-      stones_joints[stone] = prev_stone
-
-      prev_stone = nil
-    else
-      prev_stone = stone
-    end
-  end
+  local stones_offset_x = x + width / 2 - stones_side_count * grid_step / 2
+  local stones_offset_y = y + height / 2 - stones_side_count * grid_step / 2
+  stones, stones_joints = makeStones(
+    world,
+    stones_side_count,
+    grid_step,
+    stones_offset_x,
+    stones_offset_y
+  )
 end
 
 function love.draw()
