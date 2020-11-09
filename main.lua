@@ -64,12 +64,20 @@ function love.load()
     width = width - 2 * grid_step,
     height = grid_step,
   })
-  -- bottom
+  -- bottom left
   makeRectangle(world, {
     kind = "static",
     x = x + grid_step,
     y = y + height - grid_step,
-    width = width - 2 * grid_step,
+    width = (width - 3.5 * grid_step) / 2,
+    height = grid_step,
+  })
+  -- bottom right
+  makeRectangle(world, {
+    kind = "static",
+    x = x + (width + 1.5 * grid_step) / 2,
+    y = y + height - grid_step,
+    width = (width - 3.5 * grid_step) / 2,
     height = grid_step,
   })
   -- left
