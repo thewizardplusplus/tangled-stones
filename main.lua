@@ -8,6 +8,7 @@ local mlib = require("mlib")
 
 local world = nil -- love.physics.World
 local grid_step = 0
+local bottom_limit = 0
 local stones = {} -- array<windfield.Collider>
 local stones_joints = {} -- map<windfield.Collider, windfield.Collider>
 local selection_joint = nil -- love.physics.MouseJoint
@@ -42,7 +43,7 @@ local function setCollidersKind(colliders, kind, filter)
   filter = filter or function() return true end
 
   for _, collider in ipairs(colliders) do
-    if filter(collider) then
+    if not collider:isDestroyed() and filter(collider) then
       collider.body:setType(kind)
     end
   end
@@ -56,6 +57,7 @@ function love.load()
 
   local x, y, width, height = love.window.getSafeArea()
   grid_step = height / 10
+  bottom_limit = y + height - grid_step
   -- top
   makeRectangle(world, {
     kind = "static",
@@ -68,7 +70,7 @@ function love.load()
   makeRectangle(world, {
     kind = "static",
     x = x + grid_step,
-    y = y + height - grid_step,
+    y = bottom_limit,
     width = (width - 3.5 * grid_step) / 2,
     height = grid_step,
   })
@@ -76,7 +78,7 @@ function love.load()
   makeRectangle(world, {
     kind = "static",
     x = x + (width + 1.5 * grid_step) / 2,
-    y = y + height - grid_step,
+    y = bottom_limit,
     width = (width - 3.5 * grid_step) / 2,
     height = grid_step,
   })
@@ -201,4 +203,11 @@ function love.mousereleased()
 
   local selected_stones = {selected_stone, selected_stone_pair}
   setCollidersKind(selected_stones, "static")
+
+  if selected_stone then
+    local _, y = selected_stone:getPosition()
+    if y > bottom_limit then
+      selected_stone:destroy()
+    end
+  end
 end
