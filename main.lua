@@ -35,15 +35,15 @@ local function shuffle(array)
   end
 end
 
-local function isJointValid(joint)
-  return joint and not joint:isDestroyed()
+local function isEntityValid(entity)
+  return entity and not entity:isDestroyed()
 end
 
 local function setCollidersKind(colliders, kind, filter)
   filter = filter or function() return true end
 
   for _, collider in ipairs(colliders) do
-    if not collider:isDestroyed() and filter(collider) then
+    if isEntityValid(collider) and filter(collider) then
       collider.body:setType(kind)
     end
   end
@@ -156,7 +156,7 @@ function love.draw()
 end
 
 function love.update(dt)
-  if isJointValid(selection_joint) then
+  if isEntityValid(selection_joint) then
     selection_joint:setTarget(love.mouse.getPosition())
   end
 
@@ -197,7 +197,7 @@ function love.mousepressed(x, y)
 end
 
 function love.mousereleased()
-  if isJointValid(selection_joint) then
+  if isEntityValid(selection_joint) then
     selection_joint:destroy()
   end
 
