@@ -5,6 +5,7 @@ package.path = "/sdcard/lovegame/vendor/?.lua;"
 
 local windfield = require("windfield")
 local mlib = require("mlib")
+local suit = require("suit")
 
 local STONES_SIDE_COUNT = 5
 
@@ -184,6 +185,8 @@ function love.draw()
       love.graphics.line(x1, y1, x2, y2)
     end
   end
+
+  suit.draw()
 end
 
 function love.update(dt)
@@ -192,6 +195,24 @@ function love.update(dt)
   end
 
   world:update(dt)
+
+  local x, y = love.window.getSafeArea()
+  suit.layout:reset(x + grid_step / 2, y + grid_step / 2)
+
+  local reset_button = suit.Button("@", suit.layout:row(grid_step, grid_step))
+  if reset_button.hit then
+    processColliders(stones, function(stone)
+      stone:destroy()
+    end)
+
+    stones, stones_joints = makeStones(
+      world,
+      STONES_SIDE_COUNT,
+      grid_step,
+      stones_offset_x,
+      stones_offset_y
+    )
+  end
 end
 
 function love.keypressed(key)
