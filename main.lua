@@ -39,6 +39,18 @@ local function shuffle(array)
   end
 end
 
+local function isEntityValid(entity)
+  return entity and not entity:isDestroyed()
+end
+
+local function processColliders(colliders, handler)
+  for _, collider in ipairs(colliders) do
+    if isEntityValid(collider) then
+      handler(collider)
+    end
+  end
+end
+
 local function makeStones(
   world,
   side_count,
@@ -63,7 +75,7 @@ local function makeStones(
 
   local stones_joints = {}
   local prev_stone = nil
-  for _, stone in ipairs(stones) do
+  processColliders(stones, function(stone)
     if prev_stone then
       local x1, y1 = prev_stone:getPosition()
       local x2, y2 = stone:getPosition()
@@ -84,23 +96,19 @@ local function makeStones(
     else
       prev_stone = stone
     end
-  end
+  end)
 
   return stones, stones_joints
-end
-
-local function isEntityValid(entity)
-  return entity and not entity:isDestroyed()
 end
 
 local function setCollidersKind(colliders, kind, filter)
   filter = filter or function() return true end
 
-  for _, collider in ipairs(colliders) do
-    if isEntityValid(collider) and filter(collider) then
+  processColliders(colliders, function(collider)
+    if filter(collider) then
       collider.body:setType(kind)
     end
-  end
+  end)
 end
 
 function love.load()
@@ -235,11 +243,9 @@ function love.mousereleased()
   end
 
   local valid_stone_count = 0
-  for _, stone in ipairs(stones) do
-    if isEntityValid(stone) then
-      valid_stone_count = valid_stone_count + 1
-    end
-  end
+  processColliders(stones, function(stone)
+    valid_stone_count = valid_stone_count + 1
+  end)
   if valid_stone_count == 0 then
     stones, stones_joints = makeStones(
       world,
