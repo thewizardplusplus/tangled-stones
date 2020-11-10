@@ -6,9 +6,13 @@ package.path = "/sdcard/lovegame/vendor/?.lua;"
 local windfield = require("windfield")
 local mlib = require("mlib")
 
+local STONES_SIDE_COUNT = 5
+
 local world = nil -- love.physics.World
 local grid_step = 0
 local bottom_limit = 0
+local stones_offset_x = 0
+local stones_offset_y = 0
 local stones = {} -- array<windfield.Collider>
 local stones_joints = {} -- map<windfield.Collider, windfield.Collider>
 local selection_joint = nil -- love.physics.MouseJoint
@@ -150,12 +154,11 @@ function love.load()
   })
 
   -- stones
-  local stones_side_count = 5
-  local stones_offset_x = x + width / 2 - stones_side_count * grid_step / 2
-  local stones_offset_y = y + height / 2 - stones_side_count * grid_step / 2
+  stones_offset_x = x + width / 2 - STONES_SIDE_COUNT * grid_step / 2
+  stones_offset_y = y + height / 2 - STONES_SIDE_COUNT * grid_step / 2
   stones, stones_joints = makeStones(
     world,
-    stones_side_count,
+    STONES_SIDE_COUNT,
     grid_step,
     stones_offset_x,
     stones_offset_y
@@ -229,5 +232,21 @@ function love.mousereleased()
     if y > bottom_limit then
       selected_stone:destroy()
     end
+  end
+
+  local valid_stone_count = 0
+  for _, stone in ipairs(stones) do
+    if isEntityValid(stone) then
+      valid_stone_count = valid_stone_count + 1
+    end
+  end
+  if valid_stone_count == 0 then
+    stones, stones_joints = makeStones(
+      world,
+      STONES_SIDE_COUNT,
+      grid_step,
+      stones_offset_x,
+      stones_offset_y
+    )
   end
 end
