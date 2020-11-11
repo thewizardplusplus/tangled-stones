@@ -52,13 +52,7 @@ local function processColliders(colliders, handler)
   end
 end
 
-local function makeStones(
-  world,
-  side_count,
-  grid_step,
-  offset_x,
-  offset_y
-)
+local function makeStones(world, side_count, grid_step, offset_x, offset_y)
   local stones = {}
   for row = 0, side_count - 1 do
     for column = 0, side_count - 1 do
@@ -264,7 +258,7 @@ function love.mousereleased()
   end
 
   local valid_stone_count = 0
-  processColliders(stones, function(stone)
+  processColliders(stones, function()
     valid_stone_count = valid_stone_count + 1
   end)
   if valid_stone_count == 0 then
