@@ -6,8 +6,10 @@ package.path = "/sdcard/lovegame/vendor/?.lua;"
 local windfield = require("windfield")
 local mlib = require("mlib")
 local suit = require("suit")
+local factory = require("stats.factory")
 
 local STONES_SIDE_COUNT = 5
+local INITIAL_STATS_MINIMAL = 100
 
 local world = nil -- love.physics.World
 local grid_step = 0
@@ -19,6 +21,7 @@ local stones_joints = {} -- map<windfield.Collider, windfield.Collider>
 local selection_joint = nil -- love.physics.MouseJoint
 local selected_stone = nil -- windfield.Collider
 local selected_stone_pair = nil -- windfield.Collider
+local stats_storage = nil -- stats.StatsStorage
 
 local function makeRectangle(world, options)
   local rectangle = world:newRectangleCollider(
@@ -166,6 +169,8 @@ function love.load()
     stones_offset_x,
     stones_offset_y
   )
+
+  stats_storage = assert(factory.create_stats_storage("stats-db", INITIAL_STATS_MINIMAL))
 end
 
 function love.draw()
