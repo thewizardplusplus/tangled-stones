@@ -240,7 +240,6 @@ function love.update(dt)
   )
 
   -- minimal stats
-  local minimal = 42
   suit.layout:reset(x + width - 3.5 * grid_step, y + 1.5 * grid_step)
   suit.Label(
     "Min:",
@@ -248,7 +247,7 @@ function love.update(dt)
     suit.layout:row(2 * grid_step, grid_step)
   )
   suit.Label(
-    tostring(minimal),
+    tostring(stats_storage:minimal()),
     createLabelOptions("right"),
     suit.layout:col(grid_step, grid_step)
   )

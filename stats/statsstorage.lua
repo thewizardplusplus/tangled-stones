@@ -13,6 +13,10 @@ function StatsStorage:initialize(path, initial_minimal)
   end
 end
 
+function StatsStorage:minimal()
+  return self._db.stats.minimal
+end
+
 function StatsStorage:update(current)
   if self._db.stats.minimal > current then
     self._db.stats.minimal = current
