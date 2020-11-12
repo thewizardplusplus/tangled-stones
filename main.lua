@@ -315,5 +315,8 @@ function love.mousereleased()
       stones_offset_x,
       stones_offset_y
     )
+
+    stats_storage:update(current_stats)
+    current_stats = 0
   end
 end
