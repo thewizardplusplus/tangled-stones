@@ -109,6 +109,14 @@ local function setCollidersKind(colliders, kind, filter)
   end)
 end
 
+local function createLabelOptions(align)
+  return {
+    color = {normal = {fg = {1, 1, 1}}},
+    align = align,
+    valign = "top",
+  }
+end
+
 function love.load()
   math.randomseed(os.time())
 
@@ -195,7 +203,7 @@ function love.update(dt)
 
   world:update(dt)
 
-  local x, y = love.window.getSafeArea()
+  local x, y, width, height = love.window.getSafeArea()
   suit.layout:reset(x + grid_step / 2, y + grid_step / 2)
 
   local reset_button = suit.Button("@", suit.layout:row(grid_step, grid_step))
@@ -212,6 +220,34 @@ function love.update(dt)
       stones_offset_y
     )
   end
+
+  -- current stats
+  local current = 23
+  suit.layout:reset(x + width - 3.5 * grid_step, y + grid_step / 2)
+  suit.Label(
+    "Now:",
+    createLabelOptions("left"),
+    suit.layout:row(2 * grid_step, grid_step)
+  )
+  suit.Label(
+    tostring(current),
+    createLabelOptions("right"),
+    suit.layout:col(grid_step, grid_step)
+  )
+
+  -- minimal stats
+  local minimal = 42
+  suit.layout:reset(x + width - 3.5 * grid_step, y + 1.5 * grid_step)
+  suit.Label(
+    "Min:",
+    createLabelOptions("left"),
+    suit.layout:row(2 * grid_step, grid_step)
+  )
+  suit.Label(
+    tostring(minimal),
+    createLabelOptions("right"),
+    suit.layout:col(grid_step, grid_step)
+  )
 end
 
 function love.keypressed(key)
