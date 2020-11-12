@@ -120,11 +120,15 @@ end
 function love.load()
   math.randomseed(os.time())
 
+  local x, y, width, height = love.window.getSafeArea()
+  grid_step = height / 10
+
+  local font_size = grid_step / 2.5
+  love.graphics.setFont(love.graphics.newFont(font_size))
+
   world = windfield.newWorld(0, 0, true)
   world:setQueryDebugDrawing(true)
 
-  local x, y, width, height = love.window.getSafeArea()
-  grid_step = height / 10
   bottom_limit = y + height - grid_step
   -- top
   makeRectangle(world, {
