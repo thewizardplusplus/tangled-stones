@@ -224,6 +224,8 @@ function love.update(dt)
       stones_offset_x,
       stones_offset_y
     )
+
+    current_stats = 0
   end
 
   -- current stats
