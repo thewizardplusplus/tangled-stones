@@ -6,7 +6,7 @@ package.path = "/sdcard/lovegame/vendor/?.lua;"
 local windfield = require("windfield")
 local mlib = require("mlib")
 local suit = require("suit")
-local factory = require("stats.factory")
+local statsfactory = require("stats.statsfactory")
 
 local STONES_SIDE_COUNT = 5
 local INITIAL_STATS_MINIMAL = 100
@@ -183,7 +183,7 @@ function love.load()
     stones_offset_y
   )
 
-  stats_storage = assert(factory.create_stats_storage("stats-db", INITIAL_STATS_MINIMAL))
+  stats_storage = assert(statsfactory.create_stats_storage("stats-db", INITIAL_STATS_MINIMAL))
 end
 
 function love.draw()

@@ -1,8 +1,8 @@
 local StatsStorage = require("stats.statsstorage")
 
-local factory = {}
+local statsfactory = {}
 
-function factory.create_stats_storage(path, initial_minimal)
+function statsfactory.create_stats_storage(path, initial_minimal)
   local ok = love.filesystem.createDirectory(path)
   if not ok then
     return nil, "unable to create the stats DB"
@@ -12,4 +12,4 @@ function factory.create_stats_storage(path, initial_minimal)
   return StatsStorage:new(full_path, initial_minimal)
 end
 
-return factory
+return statsfactory
