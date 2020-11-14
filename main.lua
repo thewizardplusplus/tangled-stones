@@ -22,7 +22,6 @@ local selection_joint = nil -- love.physics.MouseJoint
 local selected_stone = nil -- windfield.Collider
 local selected_stone_pair = nil -- windfield.Collider
 local stats_storage = nil -- stats.StatsStorage
-local current_stats = 0 -- number of moves
 
 local function makeRectangle(world, options)
   local rectangle = world:newRectangleCollider(
@@ -225,7 +224,7 @@ function love.update(dt)
       stones_offset_y
     )
 
-    current_stats = 0
+    stats_storage.current = 0
   end
 
   -- current stats
@@ -236,7 +235,7 @@ function love.update(dt)
     suit.layout:row(2 * grid_step, grid_step)
   )
   suit.Label(
-    tostring(current_stats),
+    tostring(stats_storage.current),
     createLabelOptions("right"),
     suit.layout:col(grid_step, grid_step)
   )
@@ -302,7 +301,7 @@ function love.mousereleased()
       selected_stone:destroy()
     end
 
-    current_stats = current_stats + 1
+    stats_storage.current = stats_storage.current + 1
   end
 
   local valid_stone_count = 0
@@ -318,7 +317,6 @@ function love.mousereleased()
       stones_offset_y
     )
 
-    stats_storage:update(current_stats)
-    current_stats = 0
+    stats_storage:update()
   end
 end
