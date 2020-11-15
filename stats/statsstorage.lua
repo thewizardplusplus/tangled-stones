@@ -16,20 +16,20 @@ function StatsStorage:initialize(path, initial_minimal)
 end
 
 function StatsStorage:stats()
-  return Stats:new(self.current, self._db.stats.minimal)
+  return Stats:new(self._current, self._db.stats.minimal)
 end
 
 function StatsStorage:increment()
-  self.current = self.current + 1
+  self._current = self._current + 1
 end
 
 function StatsStorage:reset()
-  self.current = 0
+  self._current = 0
 end
 
-function StatsStorage:update()
-  if self._db.stats.minimal > self.current then
-    self._db.stats.minimal = self.current
+function StatsStorage:finish()
+  if self._db.stats.minimal > self._current then
+    self._db.stats.minimal = self._current
     self._db:save()
   end
 
