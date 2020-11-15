@@ -235,7 +235,7 @@ function love.update(dt)
     suit.layout:row(2 * grid_step, grid_step)
   )
   suit.Label(
-    tostring(stats_storage.current),
+    tostring(stats_storage:stats().current),
     createLabelOptions("right"),
     suit.layout:col(grid_step, grid_step)
   )
@@ -248,7 +248,7 @@ function love.update(dt)
     suit.layout:row(2 * grid_step, grid_step)
   )
   suit.Label(
-    tostring(stats_storage:minimal()),
+    tostring(stats_storage:stats().minimal),
     createLabelOptions("right"),
     suit.layout:col(grid_step, grid_step)
   )

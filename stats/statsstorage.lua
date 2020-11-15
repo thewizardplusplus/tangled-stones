@@ -1,5 +1,6 @@
 local middleclass = require("middleclass")
 local flatdb = require("flatdb")
+local Stats = require("models.stats")
 
 local StatsStorage = middleclass("StatsStorage")
 
@@ -14,8 +15,8 @@ function StatsStorage:initialize(path, initial_minimal)
   end
 end
 
-function StatsStorage:minimal()
-  return self._db.stats.minimal
+function StatsStorage:stats()
+  return Stats:new(self.current, self._db.stats.minimal)
 end
 
 function StatsStorage:update()
