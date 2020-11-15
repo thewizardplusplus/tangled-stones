@@ -182,7 +182,8 @@ function love.load()
     stones_offset_y
   )
 
-  stats_storage = assert(statsfactory.create_stats_storage("stats-db", INITIAL_STATS_MINIMAL))
+  stats_storage =
+    assert(statsfactory.create_stats_storage("stats-db", INITIAL_STATS_MINIMAL))
 end
 
 function love.draw()
@@ -207,7 +208,7 @@ function love.update(dt)
 
   world:update(dt)
 
-  local x, y, width, height = love.window.getSafeArea()
+  local x, y, width = love.window.getSafeArea()
   suit.layout:reset(x + grid_step / 2, y + grid_step / 2)
 
   local reset_button = suit.Button("@", suit.layout:row(grid_step, grid_step))
