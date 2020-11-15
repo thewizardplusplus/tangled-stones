@@ -6,6 +6,7 @@ package.path = "/sdcard/lovegame/vendor/?.lua;"
 local windfield = require("windfield")
 local mlib = require("mlib")
 local suit = require("suit")
+local Rectangle = require("models.rectangle")
 local statsfactory = require("stats.statsfactory")
 local ui = require("ui")
 
@@ -201,7 +202,7 @@ function love.update(dt)
 
   world:update(dt)
 
-  local x, y, width = love.window.getSafeArea()
+  local x, y, width, height = love.window.getSafeArea()
   suit.layout:reset(x + grid_step / 2, y + grid_step / 2)
 
   local reset_button = suit.Button("@", suit.layout:row(grid_step, grid_step))
@@ -221,31 +222,8 @@ function love.update(dt)
     stats_storage:reset()
   end
 
-  -- current stats
-  suit.layout:reset(x + width - 3.5 * grid_step, y + grid_step / 2)
-  suit.Label(
-    "Now:",
-    ui.create_label_options("left"),
-    suit.layout:row(2 * grid_step, grid_step)
-  )
-  suit.Label(
-    tostring(stats_storage:stats().current),
-    ui.create_label_options("right"),
-    suit.layout:col(grid_step, grid_step)
-  )
-
-  -- minimal stats
-  suit.layout:reset(x + width - 3.5 * grid_step, y + 1.5 * grid_step)
-  suit.Label(
-    "Min:",
-    ui.create_label_options("left"),
-    suit.layout:row(2 * grid_step, grid_step)
-  )
-  suit.Label(
-    tostring(stats_storage:stats().minimal),
-    ui.create_label_options("right"),
-    suit.layout:col(grid_step, grid_step)
-  )
+  local screen = Rectangle(x, y, width, height)
+  ui.update_labels(screen, stats_storage:stats())
 end
 
 function love.keypressed(key)
