@@ -203,10 +203,9 @@ function love.update(dt)
   world:update(dt)
 
   local x, y, width, height = love.window.getSafeArea()
-  suit.layout:reset(x + grid_step / 2, y + grid_step / 2)
-
-  local reset_button = suit.Button("@", suit.layout:row(grid_step, grid_step))
-  if reset_button.hit then
+  local screen = Rectangle:new(x, y, width, height)
+  local update = ui.update_buttons(screen)
+  if update.reset then
     processColliders(stones, function(stone)
       stone:destroy()
     end)
@@ -222,7 +221,6 @@ function love.update(dt)
     stats_storage:reset()
   end
 
-  local screen = Rectangle(x, y, width, height)
   ui.update_labels(screen, stats_storage:stats())
 end
 

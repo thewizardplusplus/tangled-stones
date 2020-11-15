@@ -1,4 +1,5 @@
 local suit = require("suit")
+local UiUpdate = require("models.uiupdate")
 
 local ui = {}
 
@@ -30,6 +31,14 @@ function ui.update_labels(screen, stats)
     ui._create_label_options("right"),
     suit.layout:col(grid_step, grid_step)
   )
+end
+
+function ui.update_buttons(screen)
+  local grid_step = screen.height / 10
+  suit.layout:reset(screen.x + grid_step / 2, screen.y + grid_step / 2)
+
+  local reset_button = suit.Button("@", suit.layout:row(grid_step, grid_step))
+  return UiUpdate:new(reset_button.hit)
 end
 
 function ui._create_label_options(align)
