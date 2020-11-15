@@ -301,7 +301,7 @@ function love.mousereleased()
       selected_stone:destroy()
     end
 
-    stats_storage.current = stats_storage.current + 1
+    stats_storage:increment()
   end
 
   local valid_stone_count = 0

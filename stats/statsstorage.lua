@@ -19,6 +19,10 @@ function StatsStorage:stats()
   return Stats:new(self.current, self._db.stats.minimal)
 end
 
+function StatsStorage:increment()
+  self.current = self.current + 1
+end
+
 function StatsStorage:update()
   if self._db.stats.minimal > self.current then
     self._db.stats.minimal = self.current
