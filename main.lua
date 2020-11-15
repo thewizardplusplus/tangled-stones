@@ -117,9 +117,6 @@ function love.load()
   local x, y, width, height = love.window.getSafeArea()
   grid_step = height / 10
 
-  local font_size = grid_step / 2.5
-  love.graphics.setFont(love.graphics.newFont(font_size))
-
   world = windfield.newWorld(0, 0, true)
   world:setQueryDebugDrawing(true)
 
@@ -204,7 +201,7 @@ function love.update(dt)
 
   local x, y, width, height = love.window.getSafeArea()
   local screen = Rectangle:new(x, y, width, height)
-  local update = ui.update_buttons(screen)
+  local update = ui.update(screen, stats_storage:stats())
   if update.reset then
     processColliders(stones, function(stone)
       stone:destroy()
@@ -220,8 +217,6 @@ function love.update(dt)
 
     stats_storage:reset()
   end
-
-  ui.update_labels(screen, stats_storage:stats())
 end
 
 function love.keypressed(key)

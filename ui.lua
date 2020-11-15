@@ -3,7 +3,15 @@ local UiUpdate = require("models.uiupdate")
 
 local ui = {}
 
-function ui.update_labels(screen, stats)
+function ui.update(screen, stats)
+  local font_size = screen.height / 25
+  love.graphics.setFont(love.graphics.newFont(font_size))
+
+  ui._update_labels(screen, stats)
+  return ui._update_buttons(screen)
+end
+
+function ui._update_labels(screen, stats)
   local grid_step = screen.height / 10
 
   -- current stats
@@ -33,7 +41,7 @@ function ui.update_labels(screen, stats)
   )
 end
 
-function ui.update_buttons(screen)
+function ui._update_buttons(screen)
   local grid_step = screen.height / 10
   suit.layout:reset(screen.x + grid_step / 2, screen.y + grid_step / 2)
 
