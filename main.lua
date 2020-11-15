@@ -7,6 +7,7 @@ local windfield = require("windfield")
 local mlib = require("mlib")
 local suit = require("suit")
 local statsfactory = require("stats.statsfactory")
+local ui = require("ui")
 
 local STONES_SIDE_COUNT = 5
 local INITIAL_STATS_MINIMAL = 100
@@ -107,14 +108,6 @@ local function setCollidersKind(colliders, kind, filter)
       collider.body:setType(kind)
     end
   end)
-end
-
-local function createLabelOptions(align)
-  return {
-    color = {normal = {fg = {1, 1, 1}}},
-    align = align,
-    valign = "top",
-  }
 end
 
 function love.load()
@@ -232,12 +225,12 @@ function love.update(dt)
   suit.layout:reset(x + width - 3.5 * grid_step, y + grid_step / 2)
   suit.Label(
     "Now:",
-    createLabelOptions("left"),
+    ui.create_label_options("left"),
     suit.layout:row(2 * grid_step, grid_step)
   )
   suit.Label(
     tostring(stats_storage:stats().current),
-    createLabelOptions("right"),
+    ui.create_label_options("right"),
     suit.layout:col(grid_step, grid_step)
   )
 
@@ -245,12 +238,12 @@ function love.update(dt)
   suit.layout:reset(x + width - 3.5 * grid_step, y + 1.5 * grid_step)
   suit.Label(
     "Min:",
-    createLabelOptions("left"),
+    ui.create_label_options("left"),
     suit.layout:row(2 * grid_step, grid_step)
   )
   suit.Label(
     tostring(stats_storage:stats().minimal),
-    createLabelOptions("right"),
+    ui.create_label_options("right"),
     suit.layout:col(grid_step, grid_step)
   )
 end
