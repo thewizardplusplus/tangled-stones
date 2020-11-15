@@ -224,7 +224,7 @@ function love.update(dt)
       stones_offset_y
     )
 
-    stats_storage.current = 0
+    stats_storage:reset()
   end
 
   -- current stats
