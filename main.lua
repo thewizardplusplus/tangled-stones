@@ -9,6 +9,7 @@ local suit = require("suit")
 local Rectangle = require("models.rectangle")
 local statsfactory = require("stats.statsfactory")
 local ui = require("ui")
+local physics = require("physics")
 
 local STONES_SIDE_COUNT = 5
 local INITIAL_STATS_MINIMAL = 100
@@ -24,18 +25,6 @@ local selection_joint = nil -- love.physics.MouseJoint
 local selected_stone = nil -- windfield.Collider
 local selected_stone_pair = nil -- windfield.Collider
 local stats_storage = nil -- stats.StatsStorage
-
-local function makeRectangle(world, options)
-  local rectangle = world:newRectangleCollider(
-    options.x,
-    options.y,
-    options.width,
-    options.height
-  )
-  rectangle:setType(options.kind)
-
-  return rectangle
-end
 
 local function shuffle(array)
   -- Fisher-Yates shuffle
@@ -61,13 +50,12 @@ local function makeStones(world, side_count, grid_step, offset_x, offset_y)
   local stones = {}
   for row = 0, side_count - 1 do
     for column = 0, side_count - 1 do
-      local stone = makeRectangle(world, {
-        kind = "static",
-        x = offset_x + column * grid_step,
-        y = offset_y + row * grid_step,
-        width = grid_step,
-        height = grid_step,
-      })
+      local stone = physics.make_collider(world, "static", Rectangle:new(
+        offset_x + column * grid_step,
+        offset_y + row * grid_step,
+        grid_step,
+        grid_step
+      ))
       table.insert(stones, stone)
     end
   end
@@ -122,45 +110,40 @@ function love.load()
 
   bottom_limit = y + height - grid_step
   -- top
-  makeRectangle(world, {
-    kind = "static",
-    x = x + grid_step,
-    y = y,
-    width = width - 2 * grid_step,
-    height = grid_step,
-  })
+  physics.make_collider(world, "static", Rectangle:new(
+    x + grid_step,
+    y,
+    width - 2 * grid_step,
+    grid_step
+  ))
   -- bottom left
-  makeRectangle(world, {
-    kind = "static",
-    x = x + grid_step,
-    y = bottom_limit,
-    width = (width - 3.5 * grid_step) / 2,
-    height = grid_step,
-  })
+  physics.make_collider(world, "static", Rectangle:new(
+    x + grid_step,
+    bottom_limit,
+    (width - 3.5 * grid_step) / 2,
+    grid_step
+  ))
   -- bottom right
-  makeRectangle(world, {
-    kind = "static",
-    x = x + (width + 1.5 * grid_step) / 2,
-    y = bottom_limit,
-    width = (width - 3.5 * grid_step) / 2,
-    height = grid_step,
-  })
+  physics.make_collider(world, "static", Rectangle:new(
+    x + (width + 1.5 * grid_step) / 2,
+    bottom_limit,
+    (width - 3.5 * grid_step) / 2,
+    grid_step
+  ))
   -- left
-  makeRectangle(world, {
-    kind = "static",
-    x = x,
-    y = y,
-    width = grid_step,
-    height = height,
-  })
+  physics.make_collider(world, "static", Rectangle:new(
+    x,
+    y,
+    grid_step,
+    height
+  ))
   -- right
-  makeRectangle(world, {
-    kind = "static",
-    x = x + width - grid_step,
-    y = y,
-    width = grid_step,
-    height = height,
-  })
+  physics.make_collider(world, "static", Rectangle:new(
+    x + width - grid_step,
+    y,
+    grid_step,
+    height
+  ))
 
   -- stones
   stones_offset_x = x + width / 2 - STONES_SIDE_COUNT * grid_step / 2
