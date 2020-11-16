@@ -150,7 +150,9 @@ function love.draw()
     end
   end
 
-  suit.draw()
+  local x, y, width, height = love.window.getSafeArea()
+  local screen = Rectangle:new(x, y, width, height)
+  ui.draw(screen)
 end
 
 function love.update(dt)

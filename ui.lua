@@ -3,10 +3,14 @@ local UiUpdate = require("models.uiupdate")
 
 local ui = {}
 
-function ui.update(screen, stats)
+function ui.draw(screen)
   local font_size = screen.height / 25
   love.graphics.setFont(love.graphics.newFont(font_size))
 
+  suit.draw()
+end
+
+function ui.update(screen, stats)
   ui._update_labels(screen, stats)
   return ui._update_buttons(screen)
 end
