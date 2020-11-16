@@ -77,16 +77,6 @@ local function makeStones(world, side_count, grid_step, offset_x, offset_y)
   return stones, stones_joints
 end
 
-local function setCollidersKind(colliders, kind, filter)
-  filter = filter or function() return true end
-
-  physics.process_colliders(colliders, function(collider)
-    if filter(collider) then
-      collider.body:setType(kind)
-    end
-  end)
-end
-
 function love.load()
   math.randomseed(os.time())
 
@@ -197,7 +187,7 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y)
-  setCollidersKind(stones, "dynamic")
+  physics.set_kind_of_colliders("dynamic", stones)
 
   selected_stone = nil
   local minimal_distance = math.huge
@@ -218,7 +208,7 @@ function love.mousepressed(x, y)
     selected_stone_pair = stones_joints[selected_stone]
   end
 
-  setCollidersKind(stones, "static", function(stone)
+  physics.set_kind_of_colliders("static", stones, function(stone)
     return stone ~= selected_stone and stone ~= selected_stone_pair
   end)
 end
@@ -230,7 +220,7 @@ function love.mousereleased()
   end
 
   local selected_stones = {selected_stone, selected_stone_pair}
-  setCollidersKind(selected_stones, "static")
+  physics.set_kind_of_colliders("static", selected_stones)
 
   if selected_stone then
     local _, y = selected_stone:getPosition()

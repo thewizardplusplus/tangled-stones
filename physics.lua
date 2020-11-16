@@ -20,4 +20,14 @@ function physics.process_colliders(colliders, handler)
   end
 end
 
+function physics.set_kind_of_colliders(kind, colliders, filter)
+  filter = filter or function() return true end
+
+  physics.process_colliders(colliders, function(collider)
+    if filter(collider) then
+      collider.body:setType(kind)
+    end
+  end)
+end
+
 return physics
