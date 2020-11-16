@@ -34,14 +34,6 @@ local function shuffle(array)
   end
 end
 
-local function processColliders(colliders, handler)
-  for _, collider in ipairs(colliders) do
-    if not collider:isDestroyed() then
-      handler(collider)
-    end
-  end
-end
-
 local function makeStones(world, side_count, grid_step, offset_x, offset_y)
   local stones = {}
   for row = 0, side_count - 1 do
@@ -59,7 +51,7 @@ local function makeStones(world, side_count, grid_step, offset_x, offset_y)
 
   local stones_joints = {}
   local prev_stone = nil
-  processColliders(stones, function(stone)
+  physics.process_colliders(stones, function(stone)
     if prev_stone then
       local x1, y1 = prev_stone:getPosition()
       local x2, y2 = stone:getPosition()
@@ -88,7 +80,7 @@ end
 local function setCollidersKind(colliders, kind, filter)
   filter = filter or function() return true end
 
-  processColliders(colliders, function(collider)
+  physics.process_colliders(colliders, function(collider)
     if filter(collider) then
       collider.body:setType(kind)
     end
@@ -182,7 +174,7 @@ function love.update(dt)
   local screen = Rectangle:new(x, y, width, height)
   local update = ui.update(screen, stats_storage:stats())
   if update.reset then
-    processColliders(stones, function(stone)
+    physics.process_colliders(stones, function(stone)
       stone:destroy()
     end)
 
@@ -250,7 +242,7 @@ function love.mousereleased()
   end
 
   local valid_stone_count = 0
-  processColliders(stones, function()
+  physics.process_colliders(stones, function()
     valid_stone_count = valid_stone_count + 1
   end)
   if valid_stone_count == 0 then

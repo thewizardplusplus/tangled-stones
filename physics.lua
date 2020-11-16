@@ -12,4 +12,12 @@ function physics.make_collider(world, kind, rectangle)
   return collider
 end
 
+function physics.process_colliders(colliders, handler)
+  for _, collider in ipairs(colliders) do
+    if not collider:isDestroyed() then
+      handler(collider)
+    end
+  end
+end
+
 return physics
