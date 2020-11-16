@@ -34,13 +34,9 @@ local function shuffle(array)
   end
 end
 
-local function isEntityValid(entity)
-  return entity and not entity:isDestroyed()
-end
-
 local function processColliders(colliders, handler)
   for _, collider in ipairs(colliders) do
-    if isEntityValid(collider) then
+    if not collider:isDestroyed() then
       handler(collider)
     end
   end
@@ -176,7 +172,7 @@ function love.draw()
 end
 
 function love.update(dt)
-  if isEntityValid(selection_joint) then
+  if selection_joint then
     selection_joint:setTarget(love.mouse.getPosition())
   end
 
@@ -236,8 +232,9 @@ function love.mousepressed(x, y)
 end
 
 function love.mousereleased()
-  if isEntityValid(selection_joint) then
+  if selection_joint then
     selection_joint:destroy()
+    selection_joint = nil
   end
 
   local selected_stones = {selected_stone, selected_stone_pair}
