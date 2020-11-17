@@ -30,4 +30,17 @@ function physics.set_kind_of_colliders(kind, colliders, filter)
   end)
 end
 
+function physics.draw(world)
+  world:draw()
+
+  -- draw joints
+  love.graphics.setColor(222, 128, 64, 255)
+  for _, joint in ipairs(world:getJoints()) do
+    local x1, y1, x2, y2 = joint:getAnchors()
+    if x1 and y1 and x2 and y2 then
+      love.graphics.line(x1, y1, x2, y2)
+    end
+  end
+end
+
 return physics
