@@ -31,15 +31,10 @@ local function _make_stones(world, screen, side_count)
   return stones
 end
 
-local StoneGroup = middleclass("StoneGroup")
-
-function StoneGroup:initialize(world, screen, side_count)
-  self._stones = _make_stones(world, screen, side_count)
-  shuffle(self._stones)
-
-  self._pairs = {}
+local function _make_joints(world, stones)
+  local stone_pairs = {}
   local prev_stone = nil
-  physics.process_colliders(self._stones, function(stone)
+  physics.process_colliders(stones, function(stone)
     if not prev_stone then
       prev_stone = stone
       return
@@ -57,11 +52,22 @@ function StoneGroup:initialize(world, screen, side_count)
       true
     )
 
-    self._pairs[prev_stone] = stone
-    self._pairs[stone] = prev_stone
+    stone_pairs[prev_stone] = stone
+    stone_pairs[stone] = prev_stone
 
     prev_stone = nil
   end)
+
+  return stone_pairs
+end
+
+local StoneGroup = middleclass("StoneGroup")
+
+function StoneGroup:initialize(world, screen, side_count)
+  self._stones = _make_stones(world, screen, side_count)
+  shuffle(self._stones)
+
+  self._stone_pairs = _make_joints(world, self._stones)
 end
 
 function StoneGroup:count()

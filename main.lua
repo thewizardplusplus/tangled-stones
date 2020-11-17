@@ -127,7 +127,7 @@ function love.mousepressed(x, y)
   selected_stone_pair = nil
   if selected_stone then
     selection_joint = world:addJoint("MouseJoint", selected_stone, x, y)
-    selected_stone_pair = stones._pairs[selected_stone]
+    selected_stone_pair = stones._stone_pairs[selected_stone]
   end
 
   physics.set_kind_of_colliders("static", stones._stones, function(stone)
