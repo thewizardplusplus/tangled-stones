@@ -7,6 +7,7 @@ local windfield = require("windfield")
 local mlib = require("mlib")
 local suit = require("suit")
 local Rectangle = require("models.rectangle")
+local StoneGroup = require("groups.stonegroup")
 local statsfactory = require("stats.statsfactory")
 local ui = require("ui")
 local physics = require("physics")
@@ -17,65 +18,11 @@ local INITIAL_STATS_MINIMAL = 100
 local world = nil -- love.physics.World
 local grid_step = 0
 local bottom_limit = 0
-local stones_offset_x = 0
-local stones_offset_y = 0
-local stones = {} -- array<windfield.Collider>
-local stones_joints = {} -- map<windfield.Collider, windfield.Collider>
+local stones = nil -- StoneGroup
 local selection_joint = nil -- love.physics.MouseJoint
 local selected_stone = nil -- windfield.Collider
 local selected_stone_pair = nil -- windfield.Collider
 local stats_storage = nil -- stats.StatsStorage
-
-local function shuffle(array)
-  -- Fisher-Yates shuffle
-  for i = 1, #array do
-    local j = math.random(i, #array)
-    array[i], array[j] = array[j], array[i]
-  end
-end
-
-local function makeStones(world, side_count, grid_step, offset_x, offset_y)
-  local stones = {}
-  for row = 0, side_count - 1 do
-    for column = 0, side_count - 1 do
-      local stone = physics.make_collider(world, "static", Rectangle:new(
-        offset_x + column * grid_step,
-        offset_y + row * grid_step,
-        grid_step,
-        grid_step
-      ))
-      table.insert(stones, stone)
-    end
-  end
-  shuffle(stones)
-
-  local stones_joints = {}
-  local prev_stone = nil
-  physics.process_colliders(stones, function(stone)
-    if prev_stone then
-      local x1, y1 = prev_stone:getPosition()
-      local x2, y2 = stone:getPosition()
-      world:addJoint(
-        "RopeJoint",
-        prev_stone,
-        stone,
-        x1, y1,
-        x2, y2,
-        mlib.line.getLength(x1, y1, x2, y2),
-        true
-      )
-
-      stones_joints[prev_stone] = stone
-      stones_joints[stone] = prev_stone
-
-      prev_stone = nil
-    else
-      prev_stone = stone
-    end
-  end)
-
-  return stones, stones_joints
-end
 
 function love.load()
   math.randomseed(os.time())
@@ -124,15 +71,8 @@ function love.load()
   ))
 
   -- stones
-  stones_offset_x = x + width / 2 - STONES_SIDE_COUNT * grid_step / 2
-  stones_offset_y = y + height / 2 - STONES_SIDE_COUNT * grid_step / 2
-  stones, stones_joints = makeStones(
-    world,
-    STONES_SIDE_COUNT,
-    grid_step,
-    stones_offset_x,
-    stones_offset_y
-  )
+  local screen = Rectangle:new(x, y, width, height)
+  stones = StoneGroup:new(world, screen, STONES_SIDE_COUNT)
 
   stats_storage =
     assert(statsfactory.create_stats_storage("stats-db", INITIAL_STATS_MINIMAL))
@@ -157,18 +97,11 @@ function love.update(dt)
   local screen = Rectangle:new(x, y, width, height)
   local update = ui.update(screen, stats_storage:stats())
   if update.reset then
-    physics.process_colliders(stones, function(stone)
+    physics.process_colliders(stones._stones, function(stone)
       stone:destroy()
     end)
 
-    stones, stones_joints = makeStones(
-      world,
-      STONES_SIDE_COUNT,
-      grid_step,
-      stones_offset_x,
-      stones_offset_y
-    )
-
+    stones:initialize(world, screen, STONES_SIDE_COUNT)
     stats_storage:reset()
   end
 end
@@ -180,7 +113,7 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y)
-  physics.set_kind_of_colliders("dynamic", stones)
+  physics.set_kind_of_colliders("dynamic", stones._stones)
 
   selected_stone = nil
   local minimal_distance = math.huge
@@ -198,10 +131,10 @@ function love.mousepressed(x, y)
   selected_stone_pair = nil
   if selected_stone then
     selection_joint = world:addJoint("MouseJoint", selected_stone, x, y)
-    selected_stone_pair = stones_joints[selected_stone]
+    selected_stone_pair = stones._pairs[selected_stone]
   end
 
-  physics.set_kind_of_colliders("static", stones, function(stone)
+  physics.set_kind_of_colliders("static", stones._stones, function(stone)
     return stone ~= selected_stone and stone ~= selected_stone_pair
   end)
 end
@@ -225,17 +158,13 @@ function love.mousereleased()
   end
 
   local valid_stone_count = 0
-  physics.process_colliders(stones, function()
+  physics.process_colliders(stones._stones, function()
     valid_stone_count = valid_stone_count + 1
   end)
   if valid_stone_count == 0 then
-    stones, stones_joints = makeStones(
-      world,
-      STONES_SIDE_COUNT,
-      grid_step,
-      stones_offset_x,
-      stones_offset_y
-    )
+    local x, y, width, height = love.window.getSafeArea()
+    local screen = Rectangle:new(x, y, width, height)
+    stones:initialize(world, screen, STONES_SIDE_COUNT)
 
     stats_storage:finish()
   end
