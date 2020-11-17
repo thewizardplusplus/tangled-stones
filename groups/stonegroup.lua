@@ -3,14 +3,6 @@ local mlib = require("mlib")
 local Rectangle = require("models.rectangle")
 local physics = require("physics")
 
-local function shuffle(array)
-  -- Fisher-Yates shuffle
-  for i = 1, #array do
-    local j = math.random(i, #array)
-    array[i], array[j] = array[j], array[i]
-  end
-end
-
 local function _make_stones(world, screen, side_count)
   local stones = {}
   local grid_step = screen.height / 10
@@ -29,6 +21,14 @@ local function _make_stones(world, screen, side_count)
   end
 
   return stones
+end
+
+local function _shuffle_array(array)
+  -- Fisher-Yates shuffle
+  for i = 1, #array do
+    local j = math.random(i, #array)
+    array[i], array[j] = array[j], array[i]
+  end
 end
 
 local function _make_joints(world, stones)
@@ -65,7 +65,7 @@ local StoneGroup = middleclass("StoneGroup")
 
 function StoneGroup:initialize(world, screen, side_count)
   self._stones = _make_stones(world, screen, side_count)
-  shuffle(self._stones)
+  _shuffle_array(self._stones)
 
   self._stone_pairs = _make_joints(world, self._stones)
 end
