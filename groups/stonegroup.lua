@@ -11,10 +11,8 @@ local function shuffle(array)
   end
 end
 
-local StoneGroup = middleclass("StoneGroup")
-
-function StoneGroup:initialize(world, screen, side_count)
-  self._stones = {}
+local function _make_stones(world, screen, side_count)
+  local stones = {}
   local grid_step = screen.height / 10
   local offset_x = screen.x + screen.width / 2 - side_count * grid_step / 2
   local offset_y = screen.y + screen.height / 2 - side_count * grid_step / 2
@@ -26,9 +24,17 @@ function StoneGroup:initialize(world, screen, side_count)
         grid_step,
         grid_step
       ))
-      table.insert(self._stones, stone)
+      table.insert(stones, stone)
     end
   end
+
+  return stones
+end
+
+local StoneGroup = middleclass("StoneGroup")
+
+function StoneGroup:initialize(world, screen, side_count)
+  self._stones = _make_stones(world, screen, side_count)
   shuffle(self._stones)
 
   self._pairs = {}
