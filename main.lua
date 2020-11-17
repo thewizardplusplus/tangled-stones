@@ -153,11 +153,7 @@ function love.mousereleased()
     stats_storage:increment()
   end
 
-  local valid_stone_count = 0
-  physics.process_colliders(stones._stones, function()
-    valid_stone_count = valid_stone_count + 1
-  end)
-  if valid_stone_count == 0 then
+  if stones:count() == 0 then
     local x, y, width, height = love.window.getSafeArea()
     local screen = Rectangle:new(x, y, width, height)
     stones:reset(world, screen, STONES_SIDE_COUNT)

@@ -58,6 +58,15 @@ function StoneGroup:initialize(world, screen, side_count)
   end)
 end
 
+function StoneGroup:count()
+  local count = 0
+  physics.process_colliders(self._stones, function()
+    count = count + 1
+  end)
+
+  return count
+end
+
 function StoneGroup:reset(world, screen, side_count)
   physics.process_colliders(self._stones, function(stone)
     stone:destroy()
