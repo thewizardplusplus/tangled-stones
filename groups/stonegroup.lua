@@ -58,4 +58,12 @@ function StoneGroup:initialize(world, screen, side_count)
   end)
 end
 
+function StoneGroup:reset(world, screen, side_count)
+  physics.process_colliders(self._stones, function(stone)
+    stone:destroy()
+  end)
+
+  self:initialize(world, screen, side_count)
+end
+
 return StoneGroup
