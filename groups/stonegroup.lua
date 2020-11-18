@@ -79,6 +79,34 @@ function StoneGroup:count()
   return count
 end
 
+function StoneGroup:select_stones(world, x, y, radius)
+  physics.set_kind_of_colliders("dynamic", self._stones)
+
+  local selected_stone = nil
+  local minimal_distance = math.huge
+  local colliders = world:queryCircleArea(x, y, radius)
+  for _, collider in ipairs(colliders) do
+    if collider.body:getType() == "dynamic" then
+      local distance = mlib.line.getLength(x, y, collider:getPosition())
+      if distance < minimal_distance then
+        selected_stone = collider
+        minimal_distance = distance
+      end
+    end
+  end
+
+  local selected_stone_pair = nil
+  if selected_stone then
+    selected_stone_pair = self._stone_pairs[selected_stone]
+  end
+
+  physics.set_kind_of_colliders("static", self._stones, function(stone)
+    return stone ~= selected_stone and stone ~= selected_stone_pair
+  end)
+
+  return selected_stone, selected_stone_pair
+end
+
 function StoneGroup:reset(world, screen, side_count)
   physics.process_colliders(self._stones, function(stone)
     stone:destroy()

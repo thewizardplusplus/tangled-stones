@@ -109,30 +109,10 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y)
-  physics.set_kind_of_colliders("dynamic", stones._stones)
-
-  selected_stone = nil
-  local minimal_distance = math.huge
-  local colliders = world:queryCircleArea(x, y, 1.5 * grid_step / 2)
-  for _, collider in ipairs(colliders) do
-    if collider.body:getType() == "dynamic" then
-      local distance = mlib.line.getLength(x, y, collider:getPosition())
-      if distance < minimal_distance then
-        selected_stone = collider
-        minimal_distance = distance
-      end
-    end
-  end
-
-  selected_stone_pair = nil
+  selected_stone, selected_stone_pair = stones:select_stones(world, x, y, 1.5 * grid_step / 2)
   if selected_stone then
     selection_joint = world:addJoint("MouseJoint", selected_stone, x, y)
-    selected_stone_pair = stones._stone_pairs[selected_stone]
   end
-
-  physics.set_kind_of_colliders("static", stones._stones, function(stone)
-    return stone ~= selected_stone and stone ~= selected_stone_pair
-  end)
 end
 
 function love.mousereleased()
