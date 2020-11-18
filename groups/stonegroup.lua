@@ -5,6 +5,7 @@ local physics = require("physics")
 
 local function _make_stones(world, screen, side_count)
   local stones = {}
+  local stone_index = {}
   local grid_step = screen.height / 10
   local offset_x = screen.x + screen.width / 2 - side_count * grid_step / 2
   local offset_y = screen.y + screen.height / 2 - side_count * grid_step / 2
@@ -17,10 +18,11 @@ local function _make_stones(world, screen, side_count)
         grid_step
       ))
       table.insert(stones, stone)
+      stone_index[stone] = true
     end
   end
 
-  return stones
+  return stones, stone_index
 end
 
 local function _shuffle_array(array)
@@ -64,7 +66,7 @@ end
 local StoneGroup = middleclass("StoneGroup")
 
 function StoneGroup:initialize(world, screen, side_count)
-  self._stones = _make_stones(world, screen, side_count)
+  self._stones, self._stone_index = _make_stones(world, screen, side_count)
   _shuffle_array(self._stones)
 
   self._stone_pairs = _make_joints(world, self._stones)
@@ -80,13 +82,11 @@ function StoneGroup:count()
 end
 
 function StoneGroup:select_stones(world, x, y, radius)
-  physics.set_kind_of_colliders("dynamic", self._stones)
-
   local selected_stone = nil
   local minimal_distance = math.huge
   local colliders = world:queryCircleArea(x, y, radius)
   for _, collider in ipairs(colliders) do
-    if collider.body:getType() == "dynamic" then
+    if self._stone_index[collider] then
       local distance = mlib.line.getLength(x, y, collider:getPosition())
       if distance < minimal_distance then
         selected_stone = collider
@@ -99,10 +99,6 @@ function StoneGroup:select_stones(world, x, y, radius)
   if selected_stone then
     selected_stone_pair = self._stone_pairs[selected_stone]
   end
-
-  physics.set_kind_of_colliders("static", self._stones, function(stone)
-    return stone ~= selected_stone and stone ~= selected_stone_pair
-  end)
 
   return selected_stone, selected_stone_pair
 end
