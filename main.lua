@@ -109,9 +109,7 @@ end
 
 function love.mousepressed(x, y)
   selection = stones:select_stones(world, x, y, 1.5 * grid_step / 2)
-
-  local selected_stones = {selection.primary_stone, selection.secondary_stone}
-  physics.set_kind_of_colliders("dynamic", selected_stones)
+  selection:set_kind("dynamic")
 
   if selection.primary_stone then
     selection_joint = world:addJoint("MouseJoint", selection.primary_stone, x, y)
@@ -124,8 +122,7 @@ function love.mousereleased()
     selection_joint = nil
   end
 
-  local selected_stones = {selection.primary_stone, selection.secondary_stone}
-  physics.set_kind_of_colliders("static", selected_stones)
+  selection:set_kind("static")
 
   if selection.primary_stone then
     local _, y = selection.primary_stone:getPosition()
