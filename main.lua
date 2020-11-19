@@ -85,10 +85,9 @@ function love.draw()
 end
 
 function love.update(dt)
-  if selection_joint then
-    selection_joint:setTarget(love.mouse.getPosition())
+  if selection then
+    selection:update(love.mouse.getPosition())
   end
-
   world:update(dt)
 
   local update = ui.update(screen, stats_storage:stats())
@@ -114,6 +113,7 @@ function love.mousereleased()
   if selection_joint then
     selection_joint:destroy()
     selection_joint = nil
+    selection.stone_joint = nil
   end
 
   selection:set_kind("static")
