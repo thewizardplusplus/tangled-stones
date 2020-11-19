@@ -66,7 +66,7 @@ end
 local StoneGroup = middleclass("StoneGroup")
 
 function StoneGroup:initialize(world, screen, side_count)
-  self._grid_step = screen.height / 10
+  self._grid_step = screen.height / (side_count + 5)
   self._stones, self._stone_index = _make_stones(world, screen, side_count, self._grid_step)
   _shuffle_array(self._stones)
 
