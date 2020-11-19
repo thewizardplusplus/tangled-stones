@@ -14,6 +14,7 @@ function Selection:activate(world, x, y)
   end
 
   self:set_kind("dynamic")
+
   self.stone_joint = world:addJoint("MouseJoint", self.primary_stone, x, y)
 end
 
@@ -21,6 +22,17 @@ function Selection:update(x, y)
   if self.stone_joint then
     self.stone_joint:setTarget(x, y)
   end
+end
+
+function Selection:deactivate()
+  if not self.primary_stone then
+    return
+  end
+
+  self:set_kind("static")
+
+  self.stone_joint:destroy()
+  self.stone_joint = nil
 end
 
 function Selection:set_kind(kind)

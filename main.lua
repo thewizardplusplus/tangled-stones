@@ -20,7 +20,6 @@ local screen = nil -- Rectangle
 local bottom_limit = 0
 local stones = nil -- StoneGroup
 local selection = nil -- Selection
-local selection_joint = nil -- love.physics.MouseJoint
 local stats_storage = nil -- stats.StatsStorage
 
 local function make_screen()
@@ -106,18 +105,10 @@ end
 function love.mousepressed(x, y)
   selection = stones:select_stones(world, x, y)
   selection:activate(world, x, y)
-  selection_joint = selection.stone_joint
 end
 
 function love.mousereleased()
-  if selection_joint then
-    selection_joint:destroy()
-    selection_joint = nil
-    selection.stone_joint = nil
-  end
-
-  selection:set_kind("static")
-
+  selection:deactivate()
   if selection.primary_stone then
     local _, y = selection.primary_stone:getPosition()
     if y > bottom_limit then
