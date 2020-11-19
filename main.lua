@@ -17,7 +17,6 @@ local INITIAL_STATS_MINIMAL = 100
 
 local world = nil -- love.physics.World
 local screen = nil -- Rectangle
-local grid_step = 0
 local bottom_limit = 0
 local stones = nil -- StoneGroup
 local selection = nil -- Selection
@@ -33,7 +32,7 @@ function love.load()
   math.randomseed(os.time())
 
   screen = make_screen()
-  grid_step = screen.height / 10
+  local grid_step = screen.height / 10
 
   world = windfield.newWorld(0, 0, true)
   world:setQueryDebugDrawing(true)
@@ -106,7 +105,7 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y)
-  selection = stones:select_stones(world, x, y, 1.5 * grid_step / 2)
+  selection = stones:select_stones(world, x, y)
   selection:set_kind("dynamic")
 
   if selection.primary_stone then

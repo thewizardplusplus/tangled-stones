@@ -4,10 +4,9 @@ local Rectangle = require("models.rectangle")
 local Selection = require("models.selection")
 local physics = require("physics")
 
-local function _make_stones(world, screen, side_count)
+local function _make_stones(world, screen, side_count, grid_step)
   local stones = {}
   local stone_index = {}
-  local grid_step = screen.height / 10
   local offset_x = screen.x + screen.width / 2 - side_count * grid_step / 2
   local offset_y = screen.y + screen.height / 2 - side_count * grid_step / 2
   for row = 0, side_count - 1 do
@@ -67,7 +66,8 @@ end
 local StoneGroup = middleclass("StoneGroup")
 
 function StoneGroup:initialize(world, screen, side_count)
-  self._stones, self._stone_index = _make_stones(world, screen, side_count)
+  self._grid_step = screen.height / 10
+  self._stones, self._stone_index = _make_stones(world, screen, side_count, self._grid_step)
   _shuffle_array(self._stones)
 
   self._stone_pairs = _make_joints(world, self._stones)
@@ -85,7 +85,7 @@ end
 function StoneGroup:select_stones(world, x, y, radius)
   local primary_stone = nil
   local minimal_distance = math.huge
-  local colliders = world:queryCircleArea(x, y, radius)
+  local colliders = world:queryCircleArea(x, y, 1.5 * self._grid_step / 2)
   for _, collider in ipairs(colliders) do
     if self._stone_index[collider] then
       local distance = mlib.line.getLength(x, y, collider:getPosition())
