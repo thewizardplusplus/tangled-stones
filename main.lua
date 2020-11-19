@@ -16,13 +16,13 @@ local STONES_SIDE_COUNT = 5
 local INITIAL_STATS_MINIMAL = 100
 
 local world = nil -- love.physics.World
-local screen = nil -- Rectangle
+local screen = nil -- models.Rectangle
 local bottom_limit = 0
-local stones = nil -- StoneGroup
-local selection = nil -- Selection
+local stones = nil -- groups.StoneGroup
+local selection = nil -- models.Selection
 local stats_storage = nil -- stats.StatsStorage
 
-local function make_screen()
+local function _make_screen()
   local x, y, width, height = love.window.getSafeArea()
   return Rectangle:new(x, y, width, height)
 end
@@ -30,7 +30,7 @@ end
 function love.load()
   math.randomseed(os.time())
 
-  screen = make_screen()
+  screen = _make_screen()
   local grid_step = screen.height / 10
 
   world = windfield.newWorld(0, 0, true)
