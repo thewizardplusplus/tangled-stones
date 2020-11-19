@@ -106,11 +106,8 @@ end
 
 function love.mousepressed(x, y)
   selection = stones:select_stones(world, x, y)
-  selection:set_kind("dynamic")
-
-  if selection.primary_stone then
-    selection_joint = world:addJoint("MouseJoint", selection.primary_stone, x, y)
-  end
+  selection:activate(world, x, y)
+  selection_joint = selection.stone_joint
 end
 
 function love.mousereleased()
