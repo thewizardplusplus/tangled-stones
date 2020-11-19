@@ -16,6 +16,7 @@ local STONES_SIDE_COUNT = 5
 local INITIAL_STATS_MINIMAL = 100
 
 local world = nil -- love.physics.World
+local screen = nil -- Rectangle
 local grid_step = 0
 local bottom_limit = 0
 local stones = nil -- StoneGroup
@@ -23,65 +24,64 @@ local selection = nil -- Selection
 local selection_joint = nil -- love.physics.MouseJoint
 local stats_storage = nil -- stats.StatsStorage
 
+local function make_screen()
+  local x, y, width, height = love.window.getSafeArea()
+  return Rectangle:new(x, y, width, height)
+end
+
 function love.load()
   math.randomseed(os.time())
 
-  local x, y, width, height = love.window.getSafeArea()
-  grid_step = height / 10
+  screen = make_screen()
+  grid_step = screen.height / 10
 
   world = windfield.newWorld(0, 0, true)
   world:setQueryDebugDrawing(true)
 
-  bottom_limit = y + height - grid_step
+  bottom_limit = screen.y + screen.height - grid_step
   -- top
   physics.make_collider(world, "static", Rectangle:new(
-    x + grid_step,
-    y,
-    width - 2 * grid_step,
+    screen.x + grid_step,
+    screen.y,
+    screen.width - 2 * grid_step,
     grid_step
   ))
   -- bottom left
   physics.make_collider(world, "static", Rectangle:new(
-    x + grid_step,
+    screen.x + grid_step,
     bottom_limit,
-    (width - 3.5 * grid_step) / 2,
+    (screen.width - 3.5 * grid_step) / 2,
     grid_step
   ))
   -- bottom right
   physics.make_collider(world, "static", Rectangle:new(
-    x + (width + 1.5 * grid_step) / 2,
+    screen.x + (screen.width + 1.5 * grid_step) / 2,
     bottom_limit,
-    (width - 3.5 * grid_step) / 2,
+    (screen.width - 3.5 * grid_step) / 2,
     grid_step
   ))
   -- left
   physics.make_collider(world, "static", Rectangle:new(
-    x,
-    y,
+    screen.x,
+    screen.y,
     grid_step,
-    height
+    screen.height
   ))
   -- right
   physics.make_collider(world, "static", Rectangle:new(
-    x + width - grid_step,
-    y,
+    screen.x + screen.width - grid_step,
+    screen.y,
     grid_step,
-    height
+    screen.height
   ))
 
-  -- stones
-  local screen = Rectangle:new(x, y, width, height)
   stones = StoneGroup:new(world, screen, STONES_SIDE_COUNT)
-
   stats_storage =
     assert(statsfactory.create_stats_storage("stats-db", INITIAL_STATS_MINIMAL))
 end
 
 function love.draw()
   physics.draw(world)
-
-  local x, y, width, height = love.window.getSafeArea()
-  local screen = Rectangle:new(x, y, width, height)
   ui.draw(screen)
 end
 
@@ -92,8 +92,6 @@ function love.update(dt)
 
   world:update(dt)
 
-  local x, y, width, height = love.window.getSafeArea()
-  local screen = Rectangle:new(x, y, width, height)
   local update = ui.update(screen, stats_storage:stats())
   if update.reset then
     stones:reset(world, screen, STONES_SIDE_COUNT)
@@ -134,10 +132,7 @@ function love.mousereleased()
   end
 
   if stones:count() == 0 then
-    local x, y, width, height = love.window.getSafeArea()
-    local screen = Rectangle:new(x, y, width, height)
     stones:reset(world, screen, STONES_SIDE_COUNT)
-
     stats_storage:finish()
   end
 end
