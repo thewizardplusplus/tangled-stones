@@ -19,9 +19,8 @@ local world = nil -- love.physics.World
 local grid_step = 0
 local bottom_limit = 0
 local stones = nil -- StoneGroup
+local selection = nil -- Selection
 local selection_joint = nil -- love.physics.MouseJoint
-local selected_stone = nil -- windfield.Collider
-local selected_stone_pair = nil -- windfield.Collider
 local stats_storage = nil -- stats.StatsStorage
 
 function love.load()
@@ -109,13 +108,13 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y)
-  selected_stone, selected_stone_pair = stones:select_stones(world, x, y, 1.5 * grid_step / 2)
+  selection = stones:select_stones(world, x, y, 1.5 * grid_step / 2)
 
-  local selected_stones = {selected_stone, selected_stone_pair}
+  local selected_stones = {selection.primary_stone, selection.secondary_stone}
   physics.set_kind_of_colliders("dynamic", selected_stones)
 
-  if selected_stone then
-    selection_joint = world:addJoint("MouseJoint", selected_stone, x, y)
+  if selection.primary_stone then
+    selection_joint = world:addJoint("MouseJoint", selection.primary_stone, x, y)
   end
 end
 
@@ -125,13 +124,13 @@ function love.mousereleased()
     selection_joint = nil
   end
 
-  local selected_stones = {selected_stone, selected_stone_pair}
+  local selected_stones = {selection.primary_stone, selection.secondary_stone}
   physics.set_kind_of_colliders("static", selected_stones)
 
-  if selected_stone then
-    local _, y = selected_stone:getPosition()
+  if selection.primary_stone then
+    local _, y = selection.primary_stone:getPosition()
     if y > bottom_limit then
-      selected_stone:destroy()
+      selection.primary_stone:destroy()
     end
 
     stats_storage:increment()

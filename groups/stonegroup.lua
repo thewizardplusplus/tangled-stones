@@ -1,6 +1,7 @@
 local middleclass = require("middleclass")
 local mlib = require("mlib")
 local Rectangle = require("models.rectangle")
+local Selection = require("models.selection")
 local physics = require("physics")
 
 local function _make_stones(world, screen, side_count)
@@ -82,25 +83,25 @@ function StoneGroup:count()
 end
 
 function StoneGroup:select_stones(world, x, y, radius)
-  local selected_stone = nil
+  local primary_stone = nil
   local minimal_distance = math.huge
   local colliders = world:queryCircleArea(x, y, radius)
   for _, collider in ipairs(colliders) do
     if self._stone_index[collider] then
       local distance = mlib.line.getLength(x, y, collider:getPosition())
       if distance < minimal_distance then
-        selected_stone = collider
+        primary_stone = collider
         minimal_distance = distance
       end
     end
   end
 
-  local selected_stone_pair = nil
-  if selected_stone then
-    selected_stone_pair = self._stone_pairs[selected_stone]
+  local secondary_stone = nil
+  if primary_stone then
+    secondary_stone = self._stone_pairs[primary_stone]
   end
 
-  return selected_stone, selected_stone_pair
+  return Selection:new(primary_stone, secondary_stone)
 end
 
 function StoneGroup:reset(world, screen, side_count)
