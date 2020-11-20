@@ -4,8 +4,6 @@ package.path = "/sdcard/lovegame/vendor/?.lua;"
   .. "./vendor/?/init.lua"
 
 local windfield = require("windfield")
-local mlib = require("mlib")
-local suit = require("suit")
 local Rectangle = require("models.rectangle")
 local BorderGroup = require("groups.bordergroup")
 local StoneGroup = require("groups.stonegroup")

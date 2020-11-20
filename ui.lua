@@ -19,7 +19,10 @@ function ui._update_labels(screen, stats)
   local grid_step = screen.height / 10
 
   -- current stats
-  suit.layout:reset(screen.x + screen.width - 3.5 * grid_step, screen.y + grid_step / 2)
+  suit.layout:reset(
+    screen.x + screen.width - 3.5 * grid_step,
+    screen.y + grid_step / 2
+  )
   suit.Label(
     "Now:",
     ui._create_label_options("left"),
@@ -32,7 +35,10 @@ function ui._update_labels(screen, stats)
   )
 
   -- minimal stats
-  suit.layout:reset(screen.x + screen.width - 3.5 * grid_step, screen.y + 1.5 * grid_step)
+  suit.layout:reset(
+    screen.x + screen.width - 3.5 * grid_step,
+    screen.y + 1.5 * grid_step
+  )
   suit.Label(
     "Min:",
     ui._create_label_options("left"),

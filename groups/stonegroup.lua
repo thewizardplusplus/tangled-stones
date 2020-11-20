@@ -59,7 +59,8 @@ local StoneGroup = middleclass("StoneGroup")
 
 function StoneGroup:initialize(world, screen, side_count)
   self._grid_step = screen.height / (side_count + 5)
-  self._stones, self._stone_index = _make_stones(world, screen, side_count, self._grid_step)
+  self._stones, self._stone_index =
+    _make_stones(world, screen, side_count, self._grid_step)
   table.shuffle(self._stones)
 
   self._stone_pairs = _make_joints(world, self._stones)
@@ -74,7 +75,7 @@ function StoneGroup:count()
   return count
 end
 
-function StoneGroup:select_stones(world, x, y, radius)
+function StoneGroup:select_stones(world, x, y)
   local primary_stone = nil
   local minimal_distance = math.huge
   local colliders = world:queryCircleArea(x, y, 1.5 * self._grid_step / 2)
