@@ -8,6 +8,10 @@ function Selection:initialize(primary_stone, secondary_stone)
   self.secondary_stone = secondary_stone
 end
 
+function Selection:stones()
+  return {self.primary_stone, self.secondary_stone}
+end
+
 function Selection:activate(world, x, y)
   self:_set_kind("dynamic")
 
@@ -32,8 +36,7 @@ function Selection:deactivate()
 end
 
 function Selection:_set_kind(kind)
-  local stones = {self.primary_stone, self.secondary_stone}
-  physics.process_colliders(stones, function(stone)
+  physics.process_colliders(self:stones(), function(stone)
     stone.body:setType(kind)
   end)
 end

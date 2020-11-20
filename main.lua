@@ -77,8 +77,7 @@ function love.mousereleased()
     stats_storage:increment()
   end
 
-  local selected_stones = {selection.primary_stone, selection.secondary_stone}
-  physics.process_colliders(selected_stones, function(stone)
+  physics.process_colliders(selection:stones(), function(stone)
     if borders:is_out(stone) then
       stone:destroy()
     end
