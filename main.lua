@@ -72,14 +72,17 @@ end
 
 function love.mousereleased()
   selection:deactivate()
-  if selection.primary_stone then
-    if borders:is_out(selection.primary_stone) then
-      selection.primary_stone:destroy()
-    end
 
+  if selection.primary_stone then
     stats_storage:increment()
   end
 
+  local selected_stones = {selection.primary_stone, selection.secondary_stone}
+  physics.process_colliders(selected_stones, function(stone)
+    if borders:is_out(stone) then
+      stone:destroy()
+    end
+  end)
   if stones:count() == 0 then
     stones:reset(world, screen, STONES_SIDE_COUNT)
     stats_storage:finish()
