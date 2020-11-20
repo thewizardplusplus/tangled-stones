@@ -12,6 +12,7 @@ local StoneGroup = require("groups.stonegroup")
 local statsfactory = require("stats.statsfactory")
 local ui = require("ui")
 local physics = require("physics")
+require("luatable")
 
 local STONES_SIDE_COUNT = 5
 local INITIAL_STATS_MINIMAL = 100

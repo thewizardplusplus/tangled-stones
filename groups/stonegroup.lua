@@ -25,14 +25,6 @@ local function _make_stones(world, screen, side_count, grid_step)
   return stones, stone_index
 end
 
-local function _shuffle_array(array)
-  -- Fisher-Yates shuffle
-  for i = 1, #array do
-    local j = math.random(i, #array)
-    array[i], array[j] = array[j], array[i]
-  end
-end
-
 local function _make_joints(world, stones)
   local stone_pairs = {}
   local prev_stone = nil
@@ -68,7 +60,7 @@ local StoneGroup = middleclass("StoneGroup")
 function StoneGroup:initialize(world, screen, side_count)
   self._grid_step = screen.height / (side_count + 5)
   self._stones, self._stone_index = _make_stones(world, screen, side_count, self._grid_step)
-  _shuffle_array(self._stones)
+  table.shuffle(self._stones)
 
   self._stone_pairs = _make_joints(world, self._stones)
 end
