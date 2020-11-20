@@ -7,6 +7,7 @@ local windfield = require("windfield")
 local mlib = require("mlib")
 local suit = require("suit")
 local Rectangle = require("models.rectangle")
+local BorderGroup = require("groups.bordergroup")
 local StoneGroup = require("groups.stonegroup")
 local statsfactory = require("stats.statsfactory")
 local ui = require("ui")
@@ -17,7 +18,7 @@ local INITIAL_STATS_MINIMAL = 100
 
 local world = nil -- love.physics.World
 local screen = nil -- models.Rectangle
-local bottom_limit = 0
+local borders = nil -- groups.BorderGroup
 local stones = nil -- groups.StoneGroup
 local selection = nil -- models.Selection
 local stats_storage = nil -- stats.StatsStorage
@@ -30,49 +31,11 @@ end
 function love.load()
   math.randomseed(os.time())
 
-  screen = _make_screen()
-  local grid_step = screen.height / 10
-
   world = windfield.newWorld(0, 0, true)
   world:setQueryDebugDrawing(true)
 
-  bottom_limit = screen.y + screen.height - grid_step
-  -- top
-  physics.make_collider(world, "static", Rectangle:new(
-    screen.x + grid_step,
-    screen.y,
-    screen.width - 2 * grid_step,
-    grid_step
-  ))
-  -- bottom left
-  physics.make_collider(world, "static", Rectangle:new(
-    screen.x + grid_step,
-    bottom_limit,
-    (screen.width - 3.5 * grid_step) / 2,
-    grid_step
-  ))
-  -- bottom right
-  physics.make_collider(world, "static", Rectangle:new(
-    screen.x + (screen.width + 1.5 * grid_step) / 2,
-    bottom_limit,
-    (screen.width - 3.5 * grid_step) / 2,
-    grid_step
-  ))
-  -- left
-  physics.make_collider(world, "static", Rectangle:new(
-    screen.x,
-    screen.y,
-    grid_step,
-    screen.height
-  ))
-  -- right
-  physics.make_collider(world, "static", Rectangle:new(
-    screen.x + screen.width - grid_step,
-    screen.y,
-    grid_step,
-    screen.height
-  ))
-
+  screen = _make_screen()
+  borders = BorderGroup:new(world, screen)
   stones = StoneGroup:new(world, screen, STONES_SIDE_COUNT)
   stats_storage =
     assert(statsfactory.create_stats_storage("stats-db", INITIAL_STATS_MINIMAL))
@@ -111,7 +74,7 @@ function love.mousereleased()
   selection:deactivate()
   if selection.primary_stone then
     local _, y = selection.primary_stone:getPosition()
-    if y > bottom_limit then
+    if y > borders.bottom_limit then
       selection.primary_stone:destroy()
     end
 
