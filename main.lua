@@ -73,8 +73,7 @@ end
 function love.mousereleased()
   selection:deactivate()
   if selection.primary_stone then
-    local _, y = selection.primary_stone:getPosition()
-    if y > borders.bottom_limit then
+    if borders:is_out(selection.primary_stone) then
       selection.primary_stone:destroy()
     end
 
