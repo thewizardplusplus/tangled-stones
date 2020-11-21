@@ -22,6 +22,21 @@ local stones = nil -- groups.StoneGroup
 local selection = nil -- models.Selection
 local stats_storage = nil -- stats.StatsStorage
 
+local function _enter_fullscreen()
+  local is_mobile_os = love.system.getOS() == "Android"
+    or love.system.getOS() == "iOS"
+  if not is_mobile_os then
+    return true
+  end
+
+  local ok = love.window.setFullscreen(true, "desktop")
+  if not ok then
+    return false, "unable to enter fullscreen"
+  end
+
+  return true
+end
+
 local function _make_screen()
   local x, y, width, height = love.window.getSafeArea()
   return Rectangle:new(x, y, width, height)
@@ -29,6 +44,7 @@ end
 
 function love.load()
   math.randomseed(os.time())
+  assert(_enter_fullscreen())
 
   world = windfield.newWorld(0, 0, true)
   world:setQueryDebugDrawing(true)
