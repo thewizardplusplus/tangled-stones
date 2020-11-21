@@ -58,6 +58,13 @@ function love.update(dt)
   end
 end
 
+function love.resize()
+  screen = _make_screen()
+  borders:reset(world, screen)
+  stones:reset(world, screen, STONES_SIDE_COUNT)
+  stats_storage:reset()
+end
+
 function love.keypressed(key)
   if key == "escape" then
     love.event.quit()
