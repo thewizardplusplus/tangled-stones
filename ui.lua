@@ -21,33 +21,33 @@ function ui._update_labels(screen, stats)
   -- current stats
   suit.layout:reset(
     screen.x + screen.width - 3.5 * grid_step,
-    screen.y + grid_step / 2
+    screen.y + grid_step
   )
   suit.Label(
     "Now:",
     ui._create_label_options("left"),
-    suit.layout:row(2 * grid_step, grid_step)
+    suit.layout:row(1.5 * grid_step, 0.75 * grid_step)
   )
   suit.Label(
     tostring(stats.current),
     ui._create_label_options("right"),
-    suit.layout:col(grid_step, grid_step)
+    suit.layout:col(grid_step, 0.75 * grid_step)
   )
 
   -- minimal stats
   suit.layout:reset(
     screen.x + screen.width - 3.5 * grid_step,
-    screen.y + 1.5 * grid_step
+    screen.y + 1.75 * grid_step
   )
   suit.Label(
     "Min:",
     ui._create_label_options("left"),
-    suit.layout:row(2 * grid_step, grid_step)
+    suit.layout:row(1.5 * grid_step, 0.75 * grid_step)
   )
   suit.Label(
     tostring(stats.minimal),
     ui._create_label_options("right"),
-    suit.layout:col(grid_step, grid_step)
+    suit.layout:col(grid_step, 0.75 * grid_step)
   )
 end
 
