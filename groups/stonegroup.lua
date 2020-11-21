@@ -66,6 +66,10 @@ function StoneGroup:initialize(world, screen, side_count)
   self._stone_pairs = _make_joints(world, self._stones)
 end
 
+function StoneGroup:stone_size()
+  return self._grid_step
+end
+
 function StoneGroup:count()
   local count = 0
   physics.process_colliders(self._stones, function()

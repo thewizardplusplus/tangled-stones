@@ -50,8 +50,8 @@ function love.load()
   world:setQueryDebugDrawing(true)
 
   screen = _make_screen()
-  borders = BorderGroup:new(world, screen, 50)
   stones = StoneGroup:new(world, screen, STONES_SIDE_COUNT)
+  borders = BorderGroup:new(world, screen, stones:stone_size())
   stats_storage =
     assert(statsfactory.create_stats_storage("stats-db", INITIAL_STATS_MINIMAL))
 end
@@ -76,8 +76,8 @@ end
 
 function love.resize()
   screen = _make_screen()
-  borders:reset(world, screen, 50)
   stones:reset(world, screen, STONES_SIDE_COUNT)
+  borders:reset(world, screen, stones:stone_size())
   stats_storage:reset()
 end
 
