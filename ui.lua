@@ -53,7 +53,7 @@ end
 
 function ui._update_buttons(screen)
   local grid_step = screen.height / 10
-  suit.layout:reset(screen.x + grid_step / 2, screen.y + grid_step / 2)
+  suit.layout:reset(screen.x + grid_step, screen.y + grid_step)
 
   local reset_button = suit.Button("@", suit.layout:row(grid_step, grid_step))
   return UiUpdate:new(reset_button.hit)
