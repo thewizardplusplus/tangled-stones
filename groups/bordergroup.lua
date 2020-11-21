@@ -4,8 +4,8 @@ local physics = require("physics")
 
 local BorderGroup = middleclass("BorderGroup")
 
-function BorderGroup:initialize(world, screen)
-  local grid_step = screen.height / 10
+function BorderGroup:initialize(world, screen, stone_size)
+  local grid_step = screen.height / 20
   self._bottom_limit = screen.y + screen.height - grid_step
 
   local top = physics.make_collider(world, "static", Rectangle:new(
@@ -17,13 +17,13 @@ function BorderGroup:initialize(world, screen)
   local bottom_left = physics.make_collider(world, "static", Rectangle:new(
     screen.x + grid_step,
     self._bottom_limit,
-    (screen.width - 3.5 * grid_step) / 2,
+    (screen.width - 2 * grid_step - 1.5 * stone_size) / 2,
     grid_step
   ))
   local bottom_right = physics.make_collider(world, "static", Rectangle:new(
-    screen.x + (screen.width + 1.5 * grid_step) / 2,
+    screen.x + (screen.width + 1.5 * stone_size) / 2,
     self._bottom_limit,
-    (screen.width - 3.5 * grid_step) / 2,
+    (screen.width - 2 * grid_step - 1.5 * stone_size) / 2,
     grid_step
   ))
   local left = physics.make_collider(world, "static", Rectangle:new(
@@ -46,12 +46,12 @@ function BorderGroup:is_out(stone)
   return y > self._bottom_limit
 end
 
-function BorderGroup:reset(world, screen)
+function BorderGroup:reset(world, screen, stone_size)
   physics.process_colliders(self._borders, function(border)
     border:destroy()
   end)
 
-  self:initialize(world, screen)
+  self:initialize(world, screen, stone_size)
 end
 
 return BorderGroup
