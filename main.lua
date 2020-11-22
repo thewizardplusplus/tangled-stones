@@ -14,10 +14,10 @@ require("luatable")
 local STONES_SIDE_COUNT = 5
 local INITIAL_STATS_MINIMAL = 100
 
-local world = nil -- love.physics.World
+local world = nil -- windfield.World
 local screen = nil -- models.Rectangle
-local borders = nil -- groups.BorderGroup
 local stones = nil -- groups.StoneGroup
+local borders = nil -- groups.BorderGroup
 local selection = nil -- models.Selection
 local stats_storage = nil -- stats.StatsStorage
 
