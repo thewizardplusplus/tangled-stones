@@ -1,7 +1,6 @@
-package.path = "/sdcard/lovegame/vendor/?.lua;"
-  .. "/sdcard/lovegame/vendor/?/init.lua;"
-  .. "./vendor/?.lua;"
-  .. "./vendor/?/init.lua"
+local require_paths =
+  {"?.lua", "?/init.lua", "vendor/?.lua", "vendor/?/init.lua"}
+love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local windfield = require("windfield")
 local Rectangle = require("models.rectangle")
