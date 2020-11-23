@@ -10,4 +10,17 @@ function typeutils.is_number_with_limits(number, minimum, maximum)
   return type(number) == "number" and number >= minimum and number <= maximum
 end
 
+function typeutils.is_callable(value)
+  if type(value) == "function" then
+    return true
+  end
+
+  return typeutils.has_metamethod(value, "__call")
+end
+
+function typeutils.has_metamethod(value, metamethod)
+  local metatable = getmetatable(value)
+  return metatable and typeutils.is_callable(metatable[metamethod])
+end
+
 return typeutils
