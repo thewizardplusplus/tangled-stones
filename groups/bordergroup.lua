@@ -1,10 +1,15 @@
 local middleclass = require("middleclass")
+local typeutils = require("typeutils")
 local Rectangle = require("models.rectangle")
 local physics = require("physics")
 
 local BorderGroup = middleclass("BorderGroup")
 
 function BorderGroup:initialize(world, screen, stone_size)
+  assert(type(world) == "table")
+  assert(typeutils.is_instance(screen, Rectangle))
+  assert(typeutils.is_number_with_limits(stone_size, 0, screen.height))
+
   local grid_step = screen.height / 20
   self._bottom_limit = screen.y + screen.height - grid_step - stone_size / 4
 
@@ -42,11 +47,17 @@ function BorderGroup:initialize(world, screen, stone_size)
 end
 
 function BorderGroup:is_out(stone)
+  assert(type(stone) == "table")
+
   local _, y = stone:getPosition()
   return y > self._bottom_limit
 end
 
 function BorderGroup:reset(world, screen, stone_size)
+  assert(type(world) == "table")
+  assert(typeutils.is_instance(screen, Rectangle))
+  assert(typeutils.is_number_with_limits(stone_size, 0, screen.height))
+
   physics.process_colliders(self._borders, function(border)
     border:destroy()
   end)
