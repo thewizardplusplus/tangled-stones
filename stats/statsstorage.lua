@@ -1,10 +1,14 @@
 local middleclass = require("middleclass")
 local flatdb = require("flatdb")
+local typeutils = require("typeutils")
 local Stats = require("models.stats")
 
 local StatsStorage = middleclass("StatsStorage")
 
 function StatsStorage:initialize(path, initial_minimal)
+  assert(type(path) == "string")
+  assert(typeutils.is_number_with_limits(initial_minimal, 0))
+
   self._db = flatdb(path)
   if not self._db.stats then
     self._db.stats = {
