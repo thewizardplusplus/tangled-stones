@@ -18,6 +18,12 @@ function typeutils.is_callable(value)
   return typeutils.has_metamethod(value, "__call")
 end
 
+function typeutils.is_instance(instance, class)
+  return type(instance) == "table"
+    and typeutils.is_callable(instance.isInstanceOf)
+    and instance:isInstanceOf(class)
+end
+
 function typeutils.has_metamethod(value, metamethod)
   local metatable = getmetatable(value)
   return metatable and typeutils.is_callable(metatable[metamethod])
