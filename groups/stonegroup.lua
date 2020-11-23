@@ -1,10 +1,16 @@
 local middleclass = require("middleclass")
 local mlib = require("mlib")
+local typeutils = require("typeutils")
 local Rectangle = require("models.rectangle")
 local Selection = require("models.selection")
 local physics = require("physics")
 
 local function _make_stones(world, screen, side_count, grid_step)
+  assert(type(world) == "table")
+  assert(typeutils.is_instance(screen, Rectangle))
+  assert(typeutils.is_number_with_limits(side_count, 0))
+  assert(typeutils.is_number_with_limits(grid_step, 0, screen.height))
+
   local stones = {}
   local stone_index = {}
   local offset_x = screen.x + screen.width / 2 - side_count * grid_step / 2
@@ -26,6 +32,9 @@ local function _make_stones(world, screen, side_count, grid_step)
 end
 
 local function _make_joints(world, stones)
+  assert(type(world) == "table")
+  assert(type(stones) == "table")
+
   local stone_pairs = {}
   local prev_stone = nil
   physics.process_colliders(stones, function(stone)
@@ -58,6 +67,10 @@ end
 local StoneGroup = middleclass("StoneGroup")
 
 function StoneGroup:initialize(world, screen, side_count)
+  assert(type(world) == "table")
+  assert(typeutils.is_instance(screen, Rectangle))
+  assert(typeutils.is_number_with_limits(side_count, 0))
+
   self._grid_step = screen.height / (side_count + 5)
   self._stones, self._stone_index =
     _make_stones(world, screen, side_count, self._grid_step)
@@ -80,6 +93,10 @@ function StoneGroup:count()
 end
 
 function StoneGroup:select_stones(world, x, y)
+  assert(type(world) == "table")
+  assert(typeutils.is_number_with_limits(x, 0))
+  assert(typeutils.is_number_with_limits(y, 0))
+
   local primary_stone = nil
   local minimal_distance = math.huge
   local colliders = world:queryCircleArea(x, y, 1.5 * self._grid_step / 2)
@@ -102,6 +119,10 @@ function StoneGroup:select_stones(world, x, y)
 end
 
 function StoneGroup:reset(world, screen, side_count)
+  assert(type(world) == "table")
+  assert(typeutils.is_instance(screen, Rectangle))
+  assert(typeutils.is_number_with_limits(side_count, 0))
+
   physics.process_colliders(self._stones, function(stone)
     stone:destroy()
   end)
