@@ -1,9 +1,14 @@
 local suit = require("suit")
+local typeutils = require("typeutils")
+local Rectangle = require("models.rectangle")
+local Stats = require("models.stats")
 local UiUpdate = require("models.uiupdate")
 
 local ui = {}
 
 function ui.draw(screen)
+  assert(typeutils.is_instance(screen, Rectangle))
+
   local font_size = screen.height / 25
   love.graphics.setFont(love.graphics.newFont(font_size))
 
@@ -11,11 +16,17 @@ function ui.draw(screen)
 end
 
 function ui.update(screen, stats)
+  assert(typeutils.is_instance(screen, Rectangle))
+  assert(typeutils.is_instance(stats, Stats))
+
   ui._update_labels(screen, stats)
   return ui._update_buttons(screen)
 end
 
 function ui._update_labels(screen, stats)
+  assert(typeutils.is_instance(screen, Rectangle))
+  assert(typeutils.is_instance(stats, Stats))
+
   local grid_step = screen.height / 10
 
   -- current stats
@@ -52,6 +63,8 @@ function ui._update_labels(screen, stats)
 end
 
 function ui._update_buttons(screen)
+  assert(typeutils.is_instance(screen, Rectangle))
+
   local grid_step = screen.height / 10
   suit.layout:reset(screen.x + grid_step, screen.y + grid_step)
 
@@ -60,6 +73,8 @@ function ui._update_buttons(screen)
 end
 
 function ui._create_label_options(align)
+  assert(align == "left" or align == "right")
+
   return {
     color = {normal = {fg = {1, 1, 1}}},
     align = align,
