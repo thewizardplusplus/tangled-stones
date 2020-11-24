@@ -1,6 +1,13 @@
+local typeutils = require("typeutils")
+local Rectangle = require("models.rectangle")
+
 local physics = {}
 
 function physics.make_collider(world, kind, rectangle)
+  assert(type(world) == "table")
+  assert(kind == "static" or kind == "dynamic")
+  assert(typeutils.is_instance(rectangle, Rectangle))
+
   local collider = world:newRectangleCollider(
     rectangle.x,
     rectangle.y,
@@ -13,6 +20,9 @@ function physics.make_collider(world, kind, rectangle)
 end
 
 function physics.process_colliders(colliders, handler)
+  assert(type(colliders) == "table")
+  assert(typeutils.is_callable(handler))
+
   for _, collider in ipairs(colliders) do
     if not collider:isDestroyed() then
       handler(collider)
@@ -21,6 +31,8 @@ function physics.process_colliders(colliders, handler)
 end
 
 function physics.draw(world)
+  assert(type(world) == "table")
+
   world:draw()
 
   -- draw joints
