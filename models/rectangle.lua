@@ -4,10 +4,10 @@ local typeutils = require("typeutils")
 local Rectangle = middleclass("Rectangle")
 
 function Rectangle:initialize(x, y, width, height)
-  assert(typeutils.is_number_with_limits(x, 0))
-  assert(typeutils.is_number_with_limits(y, 0))
-  assert(typeutils.is_number_with_limits(width, 0))
-  assert(typeutils.is_number_with_limits(height, 0))
+  assert(typeutils.is_positive_number(x))
+  assert(typeutils.is_positive_number(y))
+  assert(typeutils.is_positive_number(width))
+  assert(typeutils.is_positive_number(height))
 
   self.x = x
   self.y = y

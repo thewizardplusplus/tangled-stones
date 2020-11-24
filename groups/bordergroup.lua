@@ -8,7 +8,7 @@ local BorderGroup = middleclass("BorderGroup")
 function BorderGroup:initialize(world, screen, stone_size)
   assert(type(world) == "table")
   assert(typeutils.is_instance(screen, Rectangle))
-  assert(typeutils.is_number_with_limits(stone_size, 0, screen.height))
+  assert(typeutils.is_positive_number(stone_size, screen.height))
 
   local grid_step = screen.height / 20
   self._bottom_limit = screen.y + screen.height - grid_step - stone_size / 4
@@ -56,7 +56,7 @@ end
 function BorderGroup:reset(world, screen, stone_size)
   assert(type(world) == "table")
   assert(typeutils.is_instance(screen, Rectangle))
-  assert(typeutils.is_number_with_limits(stone_size, 0, screen.height))
+  assert(typeutils.is_positive_number(stone_size, screen.height))
 
   physics.process_colliders(self._borders, function(border)
     border:destroy()

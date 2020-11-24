@@ -1,13 +1,11 @@
 local typeutils = {}
 
-function typeutils.is_number_with_limits(number, minimum, maximum)
-  minimum = minimum or -math.huge
-  maximum = maximum or math.huge
+function typeutils.is_positive_number(number, limit)
+  limit = limit or math.huge
 
-  assert(type(minimum) == "number")
-  assert(type(maximum) == "number" and maximum >= minimum)
+  assert(type(limit) == "number" and limit >= 0)
 
-  return type(number) == "number" and number >= minimum and number <= maximum
+  return type(number) == "number" and number >= 0 and number <= limit
 end
 
 function typeutils.is_callable(value)
@@ -15,7 +13,7 @@ function typeutils.is_callable(value)
     return true
   end
 
-  return typeutils.has_metamethod(value, "__call")
+  return typeutils._has_metamethod(value, "__call")
 end
 
 function typeutils.is_instance(instance, class)
@@ -24,7 +22,7 @@ function typeutils.is_instance(instance, class)
     and instance:isInstanceOf(class)
 end
 
-function typeutils.has_metamethod(value, metamethod)
+function typeutils._has_metamethod(value, metamethod)
   local metatable = getmetatable(value)
   return metatable and typeutils.is_callable(metatable[metamethod])
 end

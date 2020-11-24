@@ -18,8 +18,8 @@ end
 
 function Selection:activate(world, x, y)
   assert(type(world) == "table")
-  assert(typeutils.is_number_with_limits(x, 0))
-  assert(typeutils.is_number_with_limits(y, 0))
+  assert(typeutils.is_positive_number(x))
+  assert(typeutils.is_positive_number(y))
 
   self:_set_kind("dynamic")
 
@@ -29,8 +29,8 @@ function Selection:activate(world, x, y)
 end
 
 function Selection:update(x, y)
-  assert(typeutils.is_number_with_limits(x, 0))
-  assert(typeutils.is_number_with_limits(y, 0))
+  assert(typeutils.is_positive_number(x))
+  assert(typeutils.is_positive_number(y))
 
   if self.stone_joint then
     self.stone_joint:setTarget(x, y)

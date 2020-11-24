@@ -5,7 +5,7 @@ local statsfactory = {}
 
 function statsfactory.create_stats_storage(path, initial_minimal)
   assert(type(path) == "string")
-  assert(typeutils.is_number_with_limits(initial_minimal, 0))
+  assert(typeutils.is_positive_number(initial_minimal))
 
   local ok = love.filesystem.createDirectory(path)
   if not ok then

@@ -8,8 +8,8 @@ local physics = require("physics")
 local function _make_stones(world, screen, side_count, grid_step)
   assert(type(world) == "table")
   assert(typeutils.is_instance(screen, Rectangle))
-  assert(typeutils.is_number_with_limits(side_count, 0))
-  assert(typeutils.is_number_with_limits(grid_step, 0, screen.height))
+  assert(typeutils.is_positive_number(side_count))
+  assert(typeutils.is_positive_number(grid_step, screen.height))
 
   local stones = {}
   local stone_index = {}
@@ -69,7 +69,7 @@ local StoneGroup = middleclass("StoneGroup")
 function StoneGroup:initialize(world, screen, side_count)
   assert(type(world) == "table")
   assert(typeutils.is_instance(screen, Rectangle))
-  assert(typeutils.is_number_with_limits(side_count, 0))
+  assert(typeutils.is_positive_number(side_count))
 
   self._grid_step = screen.height / (side_count + 5)
   self._stones, self._stone_index =
@@ -94,8 +94,8 @@ end
 
 function StoneGroup:select_stones(world, x, y)
   assert(type(world) == "table")
-  assert(typeutils.is_number_with_limits(x, 0))
-  assert(typeutils.is_number_with_limits(y, 0))
+  assert(typeutils.is_positive_number(x))
+  assert(typeutils.is_positive_number(y))
 
   local primary_stone = nil
   local minimal_distance = math.huge
@@ -121,7 +121,7 @@ end
 function StoneGroup:reset(world, screen, side_count)
   assert(type(world) == "table")
   assert(typeutils.is_instance(screen, Rectangle))
-  assert(typeutils.is_number_with_limits(side_count, 0))
+  assert(typeutils.is_positive_number(side_count))
 
   physics.process_colliders(self._stones, function(stone)
     stone:destroy()
