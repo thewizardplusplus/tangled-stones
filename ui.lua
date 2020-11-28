@@ -1,3 +1,6 @@
+---
+-- @module ui
+
 local suit = require("suit")
 local typeutils = require("typeutils")
 local Rectangle = require("models.rectangle")
@@ -6,6 +9,8 @@ local UiUpdate = require("models.uiupdate")
 
 local ui = {}
 
+---
+-- @tparam Rectangle screen
 function ui.draw(screen)
   assert(typeutils.is_instance(screen, Rectangle))
 
@@ -15,6 +20,10 @@ function ui.draw(screen)
   suit.draw()
 end
 
+---
+-- @tparam Rectangle screen
+-- @tparam Stats stats
+-- @treturn UiUpdate
 function ui.update(screen, stats)
   assert(typeutils.is_instance(screen, Rectangle))
   assert(typeutils.is_instance(stats, Stats))
@@ -23,6 +32,9 @@ function ui.update(screen, stats)
   return ui._update_buttons(screen)
 end
 
+---
+-- @tparam Rectangle screen
+-- @tparam Stats stats
 function ui._update_labels(screen, stats)
   assert(typeutils.is_instance(screen, Rectangle))
   assert(typeutils.is_instance(stats, Stats))
@@ -62,6 +74,9 @@ function ui._update_labels(screen, stats)
   )
 end
 
+---
+-- @tparam Rectangle screen
+-- @treturn UiUpdate
 function ui._update_buttons(screen)
   assert(typeutils.is_instance(screen, Rectangle))
 
@@ -72,6 +87,9 @@ function ui._update_buttons(screen)
   return UiUpdate:new(reset_button.hit)
 end
 
+---
+-- @tparam "left"|"right" align
+-- @treturn tab common SUIT widget options
 function ui._create_label_options(align)
   assert(align == "left" or align == "right")
 
