@@ -1,10 +1,24 @@
+---
+-- @classmod BorderGroup
+
 local middleclass = require("middleclass")
 local typeutils = require("typeutils")
 local Rectangle = require("models.rectangle")
 local physics = require("physics")
 
+---
+-- @table instance
+-- @tfield number _bottom_limit
+-- @tfield {windfield.Collider,...} _borders
+
 local BorderGroup = middleclass("BorderGroup")
 
+---
+-- @function new
+-- @tparam windfield.World world
+-- @tparam Rectangle screen
+-- @tparam number stone_size [0, screen.height]
+-- @treturn BorderGroup
 function BorderGroup:initialize(world, screen, stone_size)
   assert(type(world) == "table")
   assert(typeutils.is_instance(screen, Rectangle))
@@ -46,6 +60,9 @@ function BorderGroup:initialize(world, screen, stone_size)
   self._borders = {top, bottom_left, bottom_right, left, right}
 end
 
+---
+-- @tparam windfield.Collider stone
+-- @treturn bool
 function BorderGroup:is_out(stone)
   assert(type(stone) == "table")
 
@@ -53,6 +70,10 @@ function BorderGroup:is_out(stone)
   return y > self._bottom_limit
 end
 
+---
+-- @tparam windfield.World world
+-- @tparam Rectangle screen
+-- @tparam number stone_size [0, screen.height]
 function BorderGroup:reset(world, screen, stone_size)
   assert(type(world) == "table")
   assert(typeutils.is_instance(screen, Rectangle))
