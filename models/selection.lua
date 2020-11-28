@@ -1,9 +1,22 @@
+---
+-- @classmod Selection
+
 local middleclass = require("middleclass")
 local typeutils = require("typeutils")
 local physics = require("physics")
 
+---
+-- @table instance
+-- @tfield windfield.Collider primary_stone
+-- @tfield windfield.Collider secondary_stone
+
 local Selection = middleclass("Selection")
 
+---
+-- @function new
+-- @tparam windfield.Collider primary_stone
+-- @tparam windfield.Collider secondary_stone
+-- @treturn Selection
 function Selection:initialize(primary_stone, secondary_stone)
   assert(primary_stone == nil or type(primary_stone) == "table")
   assert(secondary_stone == nil or type(secondary_stone) == "table")
@@ -12,10 +25,16 @@ function Selection:initialize(primary_stone, secondary_stone)
   self.secondary_stone = secondary_stone
 end
 
+---
+-- @treturn {windfield.Collider,windfield.Collider} primary and secondary stones
 function Selection:stones()
   return {self.primary_stone, self.secondary_stone}
 end
 
+---
+-- @tparam windfield.World world
+-- @tparam number x [0, ∞)
+-- @tparam number y [0, ∞)
 function Selection:activate(world, x, y)
   assert(type(world) == "table")
   assert(typeutils.is_positive_number(x))
@@ -28,6 +47,9 @@ function Selection:activate(world, x, y)
   end
 end
 
+---
+-- @tparam number x [0, ∞)
+-- @tparam number y [0, ∞)
 function Selection:update(x, y)
   assert(typeutils.is_positive_number(x))
   assert(typeutils.is_positive_number(y))
@@ -37,6 +59,8 @@ function Selection:update(x, y)
   end
 end
 
+---
+-- @function deactivate
 function Selection:deactivate()
   self:_set_kind("static")
 
@@ -46,6 +70,8 @@ function Selection:deactivate()
   end
 end
 
+---
+-- @tparam "static"|"dynamic" kind
 function Selection:_set_kind(kind)
   assert(kind == "static" or kind == "dynamic")
 
