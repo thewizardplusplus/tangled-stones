@@ -8,39 +8,6 @@ local Rectangle = require("models.rectangle")
 local Selection = require("models.selection")
 local physics = require("physics")
 
-local function _make_joints(world, stones)
-  assert(type(world) == "table")
-  assert(type(stones) == "table")
-
-  local stone_pairs = {}
-  local prev_stone = nil
-  physics.process_colliders(stones, function(stone)
-    if not prev_stone then
-      prev_stone = stone
-      return
-    end
-
-    local x1, y1 = prev_stone:getPosition()
-    local x2, y2 = stone:getPosition()
-    world:addJoint(
-      "RopeJoint",
-      prev_stone,
-      stone,
-      x1, y1,
-      x2, y2,
-      mlib.line.getLength(x1, y1, x2, y2),
-      true
-    )
-
-    stone_pairs[prev_stone] = stone
-    stone_pairs[stone] = prev_stone
-
-    prev_stone = nil
-  end)
-
-  return stone_pairs
-end
-
 ---
 -- @table instance
 -- @tfield number _grid_step
@@ -86,6 +53,45 @@ function StoneGroup.static._make_stones(world, screen, side_count, grid_step)
 end
 
 ---
+-- @function _make_joints
+-- @static
+-- @tparam windfield.World world
+-- @tparam {windfield.Collider,...} stones
+-- @treturn {[windfield.Collider]=windfield.Collider,...} stone pairs
+function StoneGroup.static._make_joints(world, stones)
+  assert(type(world) == "table")
+  assert(type(stones) == "table")
+
+  local stone_pairs = {}
+  local prev_stone = nil
+  physics.process_colliders(stones, function(stone)
+    if not prev_stone then
+      prev_stone = stone
+      return
+    end
+
+    local x1, y1 = prev_stone:getPosition()
+    local x2, y2 = stone:getPosition()
+    world:addJoint(
+      "RopeJoint",
+      prev_stone,
+      stone,
+      x1, y1,
+      x2, y2,
+      mlib.line.getLength(x1, y1, x2, y2),
+      true
+    )
+
+    stone_pairs[prev_stone] = stone
+    stone_pairs[stone] = prev_stone
+
+    prev_stone = nil
+  end)
+
+  return stone_pairs
+end
+
+---
 -- @function new
 -- @tparam windfield.World world
 -- @tparam Rectangle screen
@@ -101,7 +107,7 @@ function StoneGroup:initialize(world, screen, side_count)
     StoneGroup._make_stones(world, screen, side_count, self._grid_step)
   table.shuffle(self._stones)
 
-  self._stone_pairs = _make_joints(world, self._stones)
+  self._stone_pairs = StoneGroup._make_joints(world, self._stones)
 end
 
 ---
