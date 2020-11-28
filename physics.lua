@@ -1,8 +1,16 @@
+---
+-- @module physics
+
 local typeutils = require("typeutils")
 local Rectangle = require("models.rectangle")
 
 local physics = {}
 
+---
+-- @tparam windfield.World world
+-- @tparam "static"|"dynamic" kind
+-- @tparam Rectangle rectangle
+-- @treturn windfield.Collider
 function physics.make_collider(world, kind, rectangle)
   assert(type(world) == "table")
   assert(kind == "static" or kind == "dynamic")
@@ -19,6 +27,9 @@ function physics.make_collider(world, kind, rectangle)
   return collider
 end
 
+---
+-- @tparam {windfield.Collider,...} colliders
+-- @tparam func handler func(collider: windfield.Collider): nil
 function physics.process_colliders(colliders, handler)
   assert(type(colliders) == "table")
   assert(typeutils.is_callable(handler))
@@ -30,6 +41,8 @@ function physics.process_colliders(colliders, handler)
   end
 end
 
+---
+-- @tparam windfield.World world
 function physics.draw(world)
   assert(type(world) == "table")
 
