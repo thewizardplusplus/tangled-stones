@@ -8,32 +8,6 @@ local Rectangle = require("models.rectangle")
 local Selection = require("models.selection")
 local physics = require("physics")
 
-local function _make_stones(world, screen, side_count, grid_step)
-  assert(type(world) == "table")
-  assert(typeutils.is_instance(screen, Rectangle))
-  assert(typeutils.is_positive_number(side_count))
-  assert(typeutils.is_positive_number(grid_step, screen.height))
-
-  local stones = {}
-  local stone_index = {}
-  local offset_x = screen.x + screen.width / 2 - side_count * grid_step / 2
-  local offset_y = screen.y + screen.height / 2 - side_count * grid_step / 2
-  for row = 0, side_count - 1 do
-    for column = 0, side_count - 1 do
-      local stone = physics.make_collider(world, "static", Rectangle:new(
-        offset_x + column * grid_step,
-        offset_y + row * grid_step,
-        grid_step,
-        grid_step
-      ))
-      table.insert(stones, stone)
-      stone_index[stone] = true
-    end
-  end
-
-  return stones, stone_index
-end
-
 local function _make_joints(world, stones)
   assert(type(world) == "table")
   assert(type(stones) == "table")
@@ -77,6 +51,41 @@ end
 local StoneGroup = middleclass("StoneGroup")
 
 ---
+-- @function _make_stones
+-- @static
+-- @tparam windfield.World world
+-- @tparam Rectangle screen
+-- @tparam number side_count [0, ∞)
+-- @tparam number grid_step [0, screen.height]
+-- @treturn {windfield.Collider,...} stones
+-- @treturn {[windfield.Collider]=bool,...} stone index
+function StoneGroup.static._make_stones(world, screen, side_count, grid_step)
+  assert(type(world) == "table")
+  assert(typeutils.is_instance(screen, Rectangle))
+  assert(typeutils.is_positive_number(side_count))
+  assert(typeutils.is_positive_number(grid_step, screen.height))
+
+  local stones = {}
+  local stone_index = {}
+  local offset_x = screen.x + screen.width / 2 - side_count * grid_step / 2
+  local offset_y = screen.y + screen.height / 2 - side_count * grid_step / 2
+  for row = 0, side_count - 1 do
+    for column = 0, side_count - 1 do
+      local stone = physics.make_collider(world, "static", Rectangle:new(
+        offset_x + column * grid_step,
+        offset_y + row * grid_step,
+        grid_step,
+        grid_step
+      ))
+      table.insert(stones, stone)
+      stone_index[stone] = true
+    end
+  end
+
+  return stones, stone_index
+end
+
+---
 -- @function new
 -- @tparam windfield.World world
 -- @tparam Rectangle screen
@@ -89,7 +98,7 @@ function StoneGroup:initialize(world, screen, side_count)
 
   self._grid_step = screen.height / (side_count + 5)
   self._stones, self._stone_index =
-    _make_stones(world, screen, side_count, self._grid_step)
+    StoneGroup._make_stones(world, screen, side_count, self._grid_step)
   table.shuffle(self._stones)
 
   self._stone_pairs = _make_joints(world, self._stones)
