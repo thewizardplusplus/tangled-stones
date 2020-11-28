@@ -1,5 +1,12 @@
+---
+-- @module typeutils
+
 local typeutils = {}
 
+---
+-- @tparam number number
+-- @tparam[opt=math.huge] number limit [0, ∞)
+-- @treturn bool
 function typeutils.is_positive_number(number, limit)
   limit = limit or math.huge
 
@@ -8,6 +15,9 @@ function typeutils.is_positive_number(number, limit)
   return type(number) == "number" and number >= 0 and number <= limit
 end
 
+---
+-- @tparam any value
+-- @treturn bool
 function typeutils.is_callable(value)
   if type(value) == "function" then
     return true
@@ -16,12 +26,20 @@ function typeutils.is_callable(value)
   return typeutils._has_metamethod(value, "__call")
 end
 
+---
+-- @tparam any instance
+-- @tparam tab class class created via the middleclass library
+-- @treturn bool
 function typeutils.is_instance(instance, class)
   return type(instance) == "table"
     and typeutils.is_callable(instance.isInstanceOf)
     and instance:isInstanceOf(class)
 end
 
+---
+-- @tparam any value
+-- @tparam string metamethod
+-- @treturn bool
 function typeutils._has_metamethod(value, metamethod)
   local metatable = getmetatable(value)
   return metatable and typeutils.is_callable(metatable[metamethod])
