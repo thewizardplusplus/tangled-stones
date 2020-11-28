@@ -1,3 +1,6 @@
+---
+-- @classmod StoneGroup
+
 local middleclass = require("middleclass")
 local mlib = require("mlib")
 local typeutils = require("typeutils")
@@ -64,8 +67,21 @@ local function _make_joints(world, stones)
   return stone_pairs
 end
 
+---
+-- @table instance
+-- @tfield number _grid_step
+-- @tfield {windfield.Collider,...} _stones
+-- @tfield {[windfield.Collider]=bool,...} _stone_index
+-- @tfield {[windfield.Collider]=windfield.Collider,...} _stone_pairs
+
 local StoneGroup = middleclass("StoneGroup")
 
+---
+-- @function new
+-- @tparam windfield.World world
+-- @tparam Rectangle screen
+-- @tparam number side_count [0, ∞)
+-- @treturn StoneGroup
 function StoneGroup:initialize(world, screen, side_count)
   assert(type(world) == "table")
   assert(typeutils.is_instance(screen, Rectangle))
@@ -79,10 +95,14 @@ function StoneGroup:initialize(world, screen, side_count)
   self._stone_pairs = _make_joints(world, self._stones)
 end
 
+---
+-- @treturn number [0, ∞)
 function StoneGroup:stone_size()
   return self._grid_step
 end
 
+---
+-- @treturn number [0, ∞)
 function StoneGroup:count()
   local count = 0
   physics.process_colliders(self._stones, function()
@@ -92,6 +112,10 @@ function StoneGroup:count()
   return count
 end
 
+---
+-- @tparam windfield.World world
+-- @tparam number x [0, ∞)
+-- @tparam number y [0, ∞)
 function StoneGroup:select_stones(world, x, y)
   assert(type(world) == "table")
   assert(typeutils.is_positive_number(x))
@@ -118,6 +142,10 @@ function StoneGroup:select_stones(world, x, y)
   return Selection:new(primary_stone, secondary_stone)
 end
 
+---
+-- @tparam windfield.World world
+-- @tparam Rectangle screen
+-- @tparam number side_count [0, ∞)
 function StoneGroup:reset(world, screen, side_count)
   assert(type(world) == "table")
   assert(typeutils.is_instance(screen, Rectangle))
