@@ -27,13 +27,15 @@ function typeutils.is_callable(value)
 end
 
 ---
--- @tparam any instance
+-- @tparam any value
 -- @tparam tab class class created via the middleclass library
 -- @treturn bool
-function typeutils.is_instance(instance, class)
-  return type(instance) == "table"
-    and typeutils.is_callable(instance.isInstanceOf)
-    and instance:isInstanceOf(class)
+function typeutils.is_instance(value, class)
+  assert(type(class) == "table")
+
+  return type(value) == "table"
+    and typeutils.is_callable(value.isInstanceOf)
+    and value:isInstanceOf(class)
 end
 
 ---
