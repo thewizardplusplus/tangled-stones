@@ -4,15 +4,15 @@
 local typeutils = {}
 
 ---
--- @tparam number number
+-- @tparam any value
 -- @tparam[opt=math.huge] number limit [0, ∞)
 -- @treturn bool
-function typeutils.is_positive_number(number, limit)
+function typeutils.is_positive_number(value, limit)
   limit = limit or math.huge
 
   assert(type(limit) == "number" and limit >= 0)
 
-  return type(number) == "number" and number >= 0 and number <= limit
+  return type(value) == "number" and value >= 0 and value <= limit
 end
 
 ---
