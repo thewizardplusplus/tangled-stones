@@ -41,6 +41,8 @@ end
 -- @tparam string metamethod
 -- @treturn bool
 function typeutils._has_metamethod(value, metamethod)
+  assert(type(metamethod) == "string")
+
   local metatable = getmetatable(value)
   return metatable and typeutils.is_callable(metatable[metamethod])
 end
