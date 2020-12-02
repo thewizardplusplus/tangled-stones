@@ -14,10 +14,9 @@ local physics = require("physics")
 require("luatable")
 require("compat52")
 
-local STONES_SIDE_COUNT = 5
-
 local world = nil -- windfield.World
 local screen = nil -- models.Rectangle
+local settings = nil -- models.GameSettings
 local stones = nil -- groups.StoneGroup
 local borders = nil -- groups.BorderGroup
 local selection = nil -- models.Selection
@@ -71,10 +70,11 @@ function love.load()
   world:setQueryDebugDrawing(true)
 
   screen = _make_screen()
-  stones = StoneGroup:new(world, screen, STONES_SIDE_COUNT)
+  settings = assert(_load_game_settings("game_settings.json"))
+  stones = StoneGroup:new(world, screen, settings.side_count)
   borders = BorderGroup:new(world, screen, stones:stone_size())
 
-  local initial_stats_minimal = math.pow(STONES_SIDE_COUNT, 2) * 10
+  local initial_stats_minimal = math.pow(settings.side_count, 2) * 10
   stats_storage =
     assert(statsfactory.create_stats_storage("stats-db", initial_stats_minimal))
 end
@@ -92,14 +92,14 @@ function love.update(dt)
 
   local update = ui.update(screen, stats_storage:stats())
   if update.reset then
-    stones:reset(world, screen, STONES_SIDE_COUNT)
+    stones:reset(world, screen, settings.side_count)
     stats_storage:reset()
   end
 end
 
 function love.resize()
   screen = _make_screen()
-  stones:reset(world, screen, STONES_SIDE_COUNT)
+  stones:reset(world, screen, settings.side_count)
   borders:reset(world, screen, stones:stone_size())
   stats_storage:reset()
 end
@@ -128,7 +128,7 @@ function love.mousereleased()
     end
   end)
   if stones:count() == 0 then
-    stones:reset(world, screen, STONES_SIDE_COUNT)
+    stones:reset(world, screen, settings.side_count)
     stats_storage:finish()
   end
 end
