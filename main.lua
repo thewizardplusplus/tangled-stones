@@ -3,7 +3,9 @@ local require_paths =
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local windfield = require("windfield")
+local typeutils = require("typeutils")
 local Rectangle = require("models.rectangle")
+local GameSettings = require("models.gamesettings")
 local BorderGroup = require("groups.bordergroup")
 local StoneGroup = require("groups.stonegroup")
 local statsfactory = require("stats.statsfactory")
@@ -39,6 +41,26 @@ end
 local function _make_screen()
   local x, y, width, height = love.window.getSafeArea()
   return Rectangle:new(x, y, width, height)
+end
+
+local function _load_game_settings(path)
+  assert(type(path) == "string")
+
+  local data, loading_err = typeutils.load_json(path, {
+    type = "object",
+    required = {"side_count"},
+    properties = {
+      side_count = {
+        type = "number",
+        minimum = 0,
+      },
+    },
+  })
+  if not data then
+    return nil, "unable to load the game settings: " .. loading_err
+  end
+
+  return GameSettings:new(data.side_count)
 end
 
 function love.load()
