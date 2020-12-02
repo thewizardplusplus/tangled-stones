@@ -102,7 +102,7 @@ function StoneGroup:initialize(world, screen, side_count)
   assert(typeutils.is_instance(screen, Rectangle))
   assert(typeutils.is_positive_number(side_count))
 
-  self._grid_step = screen.height / (side_count + 5)
+  self._grid_step = screen.height / (side_count + 4)
   self._stones, self._stone_index =
     StoneGroup._make_stones(world, screen, side_count, self._grid_step)
   table.shuffle(self._stones)
