@@ -12,7 +12,6 @@ local physics = require("physics")
 require("luatable")
 
 local STONES_SIDE_COUNT = 5
-local INITIAL_STATS_MINIMAL = 100
 
 local world = nil -- windfield.World
 local screen = nil -- models.Rectangle
@@ -51,8 +50,10 @@ function love.load()
   screen = _make_screen()
   stones = StoneGroup:new(world, screen, STONES_SIDE_COUNT)
   borders = BorderGroup:new(world, screen, stones:stone_size())
+
+  local initial_stats_minimal = math.pow(STONES_SIDE_COUNT, 2) * 10
   stats_storage =
-    assert(statsfactory.create_stats_storage("stats-db", INITIAL_STATS_MINIMAL))
+    assert(statsfactory.create_stats_storage("stats-db", initial_stats_minimal))
 end
 
 function love.draw()
