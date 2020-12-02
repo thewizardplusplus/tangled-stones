@@ -10,6 +10,7 @@ local statsfactory = require("stats.statsfactory")
 local ui = require("ui")
 local physics = require("physics")
 require("luatable")
+require("compat52")
 
 local STONES_SIDE_COUNT = 5
 
