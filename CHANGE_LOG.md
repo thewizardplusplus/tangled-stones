@@ -1,5 +1,7 @@
 # Change Log
 
+## [v1.5.2](https://github.com/thewizardplusplus/tangled-stones/tree/v1.5.2) (2020-12-02)
+
 ## [v1.5.1](https://github.com/thewizardplusplus/tangled-stones/tree/v1.5.1) (2020-12-01)
 
 ## [v1.5](https://github.com/thewizardplusplus/tangled-stones/tree/v1.5) (2020-11-22)
