@@ -64,6 +64,7 @@ end
 
 function love.load()
   math.randomseed(os.time())
+  love.setDeprecationOutput(true)
   assert(_enter_fullscreen())
 
   world = windfield.newWorld(0, 0, true)
