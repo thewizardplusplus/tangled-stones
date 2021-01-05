@@ -8,9 +8,24 @@ See for details: <https://love2d.org/wiki/Getting_Started#Running_Games>
 
 ### On the Android
 
-Download the archive of this repository: <https://github.com/thewizardplusplus/tangled-stones/archive/master.zip>
+Clone this repository:
 
-Change its extension from ".zip" to ".love".
+```
+$ git clone https://github.com/thewizardplusplus/tangled-stones.git
+$ cd tangled-stones
+```
+
+Make a ZIP archive containing it:
+
+```
+$ git archive --format zip --output tangled_stones.zip HEAD
+```
+
+Change its extension from `.zip` to `.love`:
+
+```
+$ mv tangled_stones.zip tangled_stones.love
+```
 
 Transfer the resulting file to the Android device.
 
