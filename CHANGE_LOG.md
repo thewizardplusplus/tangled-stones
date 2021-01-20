@@ -17,3 +17,27 @@
 ## [v1.0](https://github.com/thewizardplusplus/tangled-stones/tree/v1.0) (2020-11-07)
 
 ## [v1.0-alpha](https://github.com/thewizardplusplus/tangled-stones/tree/v1.0-alpha) (2020-11-06)
+
+### Features
+
+- physics entities:
+  - static:
+    - game field frame;
+  - dynamic:
+    - stones;
+    - joins:
+      - joins between stone pairs:
+        - rope joint (it restricts a maximal distance only);
+      - join for drag control:
+        - mouse joint (it moves a stone to a cursor);
+        - support of touches;
+- initialization:
+  - creating a game field frame:
+    - based on a window size;
+  - creating joins between stone pairs:
+    - automatically when creating stones;
+- drawing:
+  - drawing physics entities:
+    - drawing join edges;
+- operations:
+  - moving stones via drag control.
