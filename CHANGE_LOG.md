@@ -8,6 +8,15 @@
 
 ## [v1.4](https://github.com/thewizardplusplus/tangled-stones/tree/v1.4) (2020-11-20)
 
+- initialization:
+  - creating a stone grid:
+    - setting size of stones based on their count;
+- operations:
+  - moving stones via drag control:
+    - destroying stones below a bottom limit:
+      - destroying all dragged stones simultaneously;
+- refactoring.
+
 ## [v1.3](https://github.com/thewizardplusplus/tangled-stones/tree/v1.3) (2020-11-15)
 
 - game stats:
