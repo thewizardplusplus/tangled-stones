@@ -2,6 +2,64 @@
 
 2D puzzle game for Android inspired by various games about tangled webs.
 
+## Features
+
+- physics entities:
+  - static:
+    - game field frame;
+  - dynamic:
+    - stones;
+    - joins:
+      - joins between stone pairs:
+        - rope joint (it restricts a maximal distance only);
+      - join for drag control:
+        - mouse joint (it moves a stone to a cursor);
+        - support of touches;
+- game stats:
+  - metrics:
+    - current move count;
+    - minimal move count;
+  - autodetecting an initial minimum of a move count based on a count of stones;
+  - storing in the [FlatDB](https://github.com/uleelx/FlatDB) database;
+- initialization:
+  - creating a game field frame:
+    - based on a window size;
+    - splitting a bottom border for destroying stones;
+  - creating a stone grid:
+    - based on a window size;
+    - storing a count of stones in a game configuration:
+      - loading from a JSON file;
+      - validation via the JSON Schema;
+  - creating joins between stone pairs:
+    - automatically when creating stones;
+    - random shuffling of joins;
+- drawing:
+  - drawing physics entities:
+    - drawing join edges;
+  - drawing a reset button:
+    - based on a window size;
+  - drawing game stats:
+    - based on a window size;
+- operations:
+  - moving stones via drag control:
+    - selecting a stone closest to a cursor;
+    - freezing all stones except dragged ones;
+    - destroying stones below a bottom limit;
+  - restarting a game session:
+    - cases:
+      - on destroying all stones;
+      - on resizing a window;
+      - by a reset button;
+    - automatical actions:
+      - resetting game stats;
+      - saving game stats:
+        - if there are changes only;
+  - resizing a window:
+    - recreating:
+      - game field frame;
+      - stone grid;
+      - joins between stone pairs.
+
 ## Running
 
 See for details: <https://love2d.org/wiki/Getting_Started#Running_Games>
