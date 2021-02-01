@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.5.3](https://github.com/thewizardplusplus/tangled-stones/tree/v1.5.3) (2021-02-01)
+
+- fixing the description of running the game;
+- describing for releases:
+  - features;
+  - change log.
+
 ## [v1.5.2](https://github.com/thewizardplusplus/tangled-stones/tree/v1.5.2) (2020-12-02)
 
 - game stats:
