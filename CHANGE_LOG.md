@@ -4,6 +4,14 @@
 
 ## [v1.5.1](https://github.com/thewizardplusplus/tangled-stones/tree/v1.5.1) (2020-12-01)
 
+- adding:
+  - assertions for function parameters;
+  - docs:
+    - generating docs;
+    - describing docs for entities:
+      - functions;
+      - classes.
+
 ## [v1.5](https://github.com/thewizardplusplus/tangled-stones/tree/v1.5) (2020-11-22)
 
 - initialization:
