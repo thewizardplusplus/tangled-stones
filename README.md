@@ -1,5 +1,7 @@
 # Tangled Stones
 
+![](docs/screenshot.png)
+
 2D puzzle game for Android inspired by various games about tangled webs.
 
 ## Features
