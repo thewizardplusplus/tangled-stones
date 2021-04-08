@@ -1,5 +1,18 @@
 # Change Log
 
+## [v1.5.4](https://github.com/thewizardplusplus/tangled-stones/tree/v1.5.4) (2021-04-08)
+
+- describe the game documentation:
+  - contents:
+    - controls;
+    - gameplay;
+  - translations:
+    - in English;
+    - in Russian;
+  - misc.:
+    - screenshot;
+    - linked table of contents.
+
 ## [v1.5.3](https://github.com/thewizardplusplus/tangled-stones/tree/v1.5.3) (2021-02-01)
 
 - fixing the description of running the game;
