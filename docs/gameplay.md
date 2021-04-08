@@ -14,11 +14,11 @@ The game field is limited by a barrier. There is a hole in the center of the bot
 
 ## Functioning of the Game Field
 
-The player can move any stone. Other stones and the barrier are obstacles.
+The player can move any stone. The other stones and the barrier are obstacles.
 
-By default, all stones are frozen, i.e. they cannot move. When the player interacts with a stone, it is unfrozen. The stone connected to it is also unfrozen. All other stones remain frozen and still cannot move! After the end of interaction with stones, the latter are frozen again.
+By default, all the stones are frozen, i.e. they cannot move. When the player interacts with a stone, it becomes unfrozen. The stone connected to it also becomes unfrozen. All the other stones remain frozen and still cannot move! When the interaction with the stones is over, the stones are frozen again.
 
-The rope connecting the stones is indestructible. Its length may decrease, but it cannot increase. The connected stones may not be further apart than they were created, but they may be closer.
+The rope connecting the stones is indestructible. Its length can decrease, but it cannot increase. The connected stones cannot be further apart than when they were created, but they can be closer.
 
 If a stone is moved outside the barrier, it is removed from the game field.
 
