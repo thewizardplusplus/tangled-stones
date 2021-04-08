@@ -1,5 +1,14 @@
 # Change Log
 
+## [v1.5.5](https://github.com/thewizardplusplus/tangled-stones/tree/v1.5.5) (2021-04-08)
+
+- misc. improvements:
+  - adding the configuration of the [makelove](https://github.com/pfirsich/makelove) tool:
+    - supporting the building of the game for the following platforms:
+      - Windows;
+      - macOS;
+      - Linux (via the [AppImage](https://appimage.org/) format).
+
 ## [v1.5.4](https://github.com/thewizardplusplus/tangled-stones/tree/v1.5.4) (2021-04-08)
 
 - describe the game documentation:
