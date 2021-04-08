@@ -26,4 +26,4 @@ If a stone is moved outside the barrier, it is removed from the game field.
 
 The game goal is to clear the game field of stones. This is done by moving the stones into the hole in the barrier.
 
-The game keeps statistics by memorizing the minimum number of actions for all game sessions. One action in this case is a continuous movement of a stone (i.e., let go of the stone — complete the action).
+The game keeps statistics by memorizing the minimum number of actions for all game sessions. One action in this case is a continuous movement of a stone (i.e. release the stone — complete the action).
