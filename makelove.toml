@@ -1,0 +1,20 @@
+name = "tangled-stones"
+love_files = ["::git-ls-tree::"] # all files tracked by git
+default_targets = ["win64", "macos", "appimage"]
+build_directory = "builds"
+
+[windows]
+[windows.archive_files]
+"LICENSE_FOR_BUILD.txt" = "license.txt"
+
+[windows.exe_metadata]
+CompanyName = "Personal"
+LegalCopyright = "Copyright (C) 2020-2021 thewizardplusplus <thewizardplusplus@yandex.ru>"
+FileVersion = "v1.5.5"
+FileDescription = "tangled-stones v1.5.5"
+
+[macos]
+[macos.app_metadata]
+CFBundleIdentifier = "ru.thewizardplusplus.tangled-stones" # should be in reverse-DNS format
+CFBundleShortVersionString = "v1.5.5"
+NSHumanReadableCopyright = "Copyright (C) 2020-2021 thewizardplusplus <thewizardplusplus@yandex.ru>"
