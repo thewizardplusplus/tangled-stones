@@ -126,8 +126,8 @@ $ love .
 ## Documentation
 
 - Table of Contents ([EN](docs/README.md) / [RU](docs/README_ru.md)):
-  - Controls ([EN](docs/controls.md) / [RU](docs/controls_ru.md))
   - Gameplay ([EN](docs/gameplay.md) / [RU](docs/gameplay_ru.md))
+  - Controls ([EN](docs/controls.md) / [RU](docs/controls_ru.md))
 
 ## License
 
