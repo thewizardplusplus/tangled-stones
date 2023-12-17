@@ -2,7 +2,7 @@
 -- @classmod Selection
 
 local middleclass = require("middleclass")
-local typeutils = require("typeutils")
+local assertions = require("luatypechecks.assertions")
 local physics = require("physics")
 
 ---
@@ -18,8 +18,8 @@ local Selection = middleclass("Selection")
 -- @tparam windfield.Collider secondary_stone
 -- @treturn Selection
 function Selection:initialize(primary_stone, secondary_stone)
-  assert(primary_stone == nil or type(primary_stone) == "table")
-  assert(secondary_stone == nil or type(secondary_stone) == "table")
+  assertions.is_table_or_nil(primary_stone)
+  assertions.is_table_or_nil(secondary_stone)
 
   self.primary_stone = primary_stone
   self.secondary_stone = secondary_stone
@@ -36,9 +36,9 @@ end
 -- @tparam number x [0, ∞)
 -- @tparam number y [0, ∞)
 function Selection:activate(world, x, y)
-  assert(type(world) == "table")
-  assert(typeutils.is_positive_number(x))
-  assert(typeutils.is_positive_number(y))
+  assertions.is_table(world)
+  assertions.is_number(x)
+  assertions.is_number(y)
 
   self:_set_kind("dynamic")
 
@@ -51,8 +51,8 @@ end
 -- @tparam number x [0, ∞)
 -- @tparam number y [0, ∞)
 function Selection:update(x, y)
-  assert(typeutils.is_positive_number(x))
-  assert(typeutils.is_positive_number(y))
+  assertions.is_number(x)
+  assertions.is_number(y)
 
   if self.stone_joint then
     self.stone_joint:setTarget(x, y)
@@ -73,9 +73,11 @@ end
 ---
 -- @tparam "static"|"dynamic" kind
 function Selection:_set_kind(kind)
-  assert(kind == "static" or kind == "dynamic")
+  assertions.is_enumeration(kind, {"static", "dynamic"})
 
   physics.process_colliders(self:stones(), function(stone)
+    assertions.is_table(stone)
+
     stone.body:setType(kind)
   end)
 end
