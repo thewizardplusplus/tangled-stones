@@ -1,7 +1,8 @@
 ---
 -- @module physics
 
-local typeutils = require("typeutils")
+local assertions = require("luatypechecks.assertions")
+local checks = require("luatypechecks.checks")
 local Rectangle = require("models.rectangle")
 
 local physics = {}
@@ -12,9 +13,9 @@ local physics = {}
 -- @tparam Rectangle rectangle
 -- @treturn windfield.Collider
 function physics.make_collider(world, kind, rectangle)
-  assert(type(world) == "table")
-  assert(kind == "static" or kind == "dynamic")
-  assert(typeutils.is_instance(rectangle, Rectangle))
+  assertions.is_table(world)
+  assertions.is_enumeration(kind, {"static", "dynamic"})
+  assertions.is_instance(rectangle, Rectangle)
 
   local collider = world:newRectangleCollider(
     rectangle.x,
@@ -31,8 +32,8 @@ end
 -- @tparam {windfield.Collider,...} colliders
 -- @tparam func handler func(collider: windfield.Collider): nil
 function physics.process_colliders(colliders, handler)
-  assert(type(colliders) == "table")
-  assert(typeutils.is_callable(handler))
+  assertions.is_sequence(colliders, checks.is_table)
+  assertions.is_function(handler)
 
   for _, collider in ipairs(colliders) do
     if not collider:isDestroyed() then
@@ -44,7 +45,7 @@ end
 ---
 -- @tparam windfield.World world
 function physics.draw(world)
-  assert(type(world) == "table")
+  assertions.is_table(world)
 
   world:draw()
 
