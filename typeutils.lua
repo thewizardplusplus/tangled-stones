@@ -3,6 +3,8 @@
 
 local json = require("json")
 local jsonschema = require("jsonschema")
+local assertions = require("luatypechecks.assertions")
+local checks = require("luatypechecks.checks")
 
 local typeutils = {}
 
@@ -13,16 +15,16 @@ local typeutils = {}
 function typeutils.is_positive_number(value, limit)
   limit = limit or math.huge
 
-  assert(type(limit) == "number" and limit >= 0)
+  assertions.is_number(limit)
 
-  return type(value) == "number" and value >= 0 and value <= limit
+  return checks.is_number(value) and value >= 0 and value <= limit
 end
 
 ---
 -- @tparam any value
 -- @treturn bool
 function typeutils.is_callable(value)
-  if type(value) == "function" then
+  if checks.is_function(value) then
     return true
   end
 
@@ -34,9 +36,9 @@ end
 -- @tparam tab class class created via the middleclass library
 -- @treturn bool
 function typeutils.is_instance(value, class)
-  assert(type(class) == "table")
+  assertions.is_table(class)
 
-  return type(value) == "table"
+  return checks.is_table(value)
     and typeutils.is_callable(value.isInstanceOf)
     and value:isInstanceOf(class)
 end
@@ -47,8 +49,8 @@ end
 -- @treturn tab
 -- @error error message
 function typeutils.load_json(path, schema)
-  assert(type(path) == "string")
-  assert(type(schema) == "table")
+  assertions.is_string(path)
+  assertions.is_table(schema)
 
   local data_in_json, reading_err = love.filesystem.read(path)
   if not data_in_json then
@@ -79,7 +81,7 @@ end
 -- @tparam string metamethod
 -- @treturn bool
 function typeutils._has_metamethod(value, metamethod)
-  assert(type(metamethod) == "string")
+  assertions.is_string(metamethod)
 
   local metatable = getmetatable(value)
   return metatable and typeutils.is_callable(metatable[metamethod])
@@ -91,7 +93,7 @@ end
 -- @treturn any successful handler result
 -- @error raised handler error
 function typeutils._catch_error(handler, ...)
-  assert(type(handler) == "function")
+  assertions.is_function(handler)
 
   local arguments = table.pack(...)
   local ok, result = pcall(function()
