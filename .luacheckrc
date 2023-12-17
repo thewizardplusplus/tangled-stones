@@ -1,5 +1,6 @@
 exclude_files = {
-  "vendor",
+  ".luarocks/", -- created by the `leafo/gh-actions-luarocks` GitHub action
+  "vendor/",
 }
 globals = {
   table = { fields = { shuffle = {} } },
