@@ -2,7 +2,7 @@
 -- @classmod Stats
 
 local middleclass = require("middleclass")
-local typeutils = require("typeutils")
+local assertions = require("luatypechecks.assertions")
 
 ---
 -- @table instance
@@ -17,8 +17,8 @@ local Stats = middleclass("Stats")
 -- @tparam number minimal [0, ∞)
 -- @treturn Stats
 function Stats:initialize(current, minimal)
-  assert(typeutils.is_positive_number(current))
-  assert(typeutils.is_positive_number(minimal))
+  assertions.is_number(current)
+  assertions.is_number(minimal)
 
   self.current = current
   self.minimal = minimal
