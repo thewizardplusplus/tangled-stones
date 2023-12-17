@@ -3,7 +3,7 @@
 
 local middleclass = require("middleclass")
 local flatdb = require("flatdb")
-local typeutils = require("typeutils")
+local assertions = require("luatypechecks.assertions")
 local Stats = require("models.stats")
 
 ---
@@ -19,8 +19,8 @@ local StatsStorage = middleclass("StatsStorage")
 -- @tparam number initial_minimal [0, ∞)
 -- @treturn StatsStorage
 function StatsStorage:initialize(path, initial_minimal)
-  assert(type(path) == "string")
-  assert(typeutils.is_positive_number(initial_minimal))
+  assertions.is_string(path)
+  assertions.is_number(initial_minimal)
 
   self._db = flatdb(path)
   if not self._db.stats then

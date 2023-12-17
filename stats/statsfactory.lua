@@ -2,7 +2,7 @@
 -- @module statsfactory
 
 local StatsStorage = require("stats.statsstorage")
-local typeutils = require("typeutils")
+local assertions = require("luatypechecks.assertions")
 
 local statsfactory = {}
 
@@ -12,8 +12,8 @@ local statsfactory = {}
 -- @treturn StatsStorage
 -- @error error message
 function statsfactory.create_stats_storage(path, initial_minimal)
-  assert(type(path) == "string")
-  assert(typeutils.is_positive_number(initial_minimal))
+  assertions.is_string(path)
+  assertions.is_number(initial_minimal)
 
   local ok = love.filesystem.createDirectory(path)
   if not ok then
