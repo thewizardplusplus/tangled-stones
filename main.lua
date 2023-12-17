@@ -3,6 +3,7 @@ local require_paths =
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local windfield = require("windfield")
+local assertions = require("luatypechecks.assertions")
 local typeutils = require("typeutils")
 local Rectangle = require("models.rectangle")
 local GameSettings = require("models.gamesettings")
@@ -43,7 +44,7 @@ local function _make_screen()
 end
 
 local function _load_game_settings(path)
-  assert(type(path) == "string")
+  assertions.is_string(path)
 
   local data, loading_err = typeutils.load_json(path, {
     type = "object",
@@ -86,6 +87,8 @@ function love.draw()
 end
 
 function love.update(dt)
+  assertions.is_number(dt)
+
   if selection then
     selection:update(love.mouse.getPosition())
   end
@@ -106,12 +109,17 @@ function love.resize()
 end
 
 function love.keypressed(key)
+  assertions.is_string(key)
+
   if key == "escape" then
     love.event.quit()
   end
 end
 
 function love.mousepressed(x, y)
+  assertions.is_number(x)
+  assertions.is_number(y)
+
   selection = stones:select_stones(world, x, y)
   selection:activate(world, x, y)
 end
@@ -124,6 +132,8 @@ function love.mousereleased()
   end
 
   physics.process_colliders(selection:stones(), function(stone)
+    assertions.is_table(stone)
+
     if borders:is_out(stone) then
       stone:destroy()
     end
