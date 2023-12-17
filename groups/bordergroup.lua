@@ -2,7 +2,7 @@
 -- @classmod BorderGroup
 
 local middleclass = require("middleclass")
-local typeutils = require("typeutils")
+local assertions = require("luatypechecks.assertions")
 local Rectangle = require("models.rectangle")
 local physics = require("physics")
 
@@ -20,9 +20,9 @@ local BorderGroup = middleclass("BorderGroup")
 -- @tparam number stone_size [0, screen.height]
 -- @treturn BorderGroup
 function BorderGroup:initialize(world, screen, stone_size)
-  assert(type(world) == "table")
-  assert(typeutils.is_instance(screen, Rectangle))
-  assert(typeutils.is_positive_number(stone_size, screen.height))
+  assertions.is_table(world)
+  assertions.is_instance(screen, Rectangle)
+  assertions.is_number(stone_size)
 
   local grid_step = screen.height / 20
   self._bottom_limit = screen.y + screen.height - grid_step - stone_size / 4
@@ -64,7 +64,7 @@ end
 -- @tparam windfield.Collider stone
 -- @treturn bool
 function BorderGroup:is_out(stone)
-  assert(type(stone) == "table")
+  assertions.is_table(stone)
 
   local _, y = stone:getPosition()
   return y > self._bottom_limit
@@ -75,11 +75,13 @@ end
 -- @tparam Rectangle screen
 -- @tparam number stone_size [0, screen.height]
 function BorderGroup:reset(world, screen, stone_size)
-  assert(type(world) == "table")
-  assert(typeutils.is_instance(screen, Rectangle))
-  assert(typeutils.is_positive_number(stone_size, screen.height))
+  assertions.is_table(world)
+  assertions.is_instance(screen, Rectangle)
+  assertions.is_number(stone_size)
 
   physics.process_colliders(self._borders, function(border)
+    assertions.is_table(border)
+
     border:destroy()
   end)
 
