@@ -1,5 +1,7 @@
 # Tangled Stones
 
+[![lint](https://github.com/thewizardplusplus/tangled-stones/actions/workflows/lint.yaml/badge.svg)](https://github.com/thewizardplusplus/tangled-stones/actions/workflows/lint.yaml)
+
 ![](docs/screenshot.png)
 
 2D puzzle game for Android inspired by various games about tangled webs.
