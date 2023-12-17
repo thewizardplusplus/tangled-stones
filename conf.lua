@@ -1,9 +1,5 @@
 local assertions = require("luatypechecks.assertions")
 
-local function _is_positive_number(value)
-  return type(value) == "number" and value >= 0
-end
-
 local function _set_title(config, title)
   assertions.is_table(config)
   assertions.is_string(title)
