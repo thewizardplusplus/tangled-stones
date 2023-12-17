@@ -2,6 +2,7 @@
 -- @classmod UiUpdate
 
 local middleclass = require("middleclass")
+local assertions = require("luatypechecks.assertions")
 
 ---
 -- @table instance
@@ -14,7 +15,7 @@ local UiUpdate = middleclass("UiUpdate")
 -- @tparam bool reset
 -- @treturn UiUpdate
 function UiUpdate:initialize(reset)
-  assert(type(reset) == "boolean")
+  assertions.is_boolean(reset)
 
   self.reset = reset
 end

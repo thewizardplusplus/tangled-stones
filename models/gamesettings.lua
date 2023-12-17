@@ -2,7 +2,7 @@
 -- @classmod GameSettings
 
 local middleclass = require("middleclass")
-local typeutils = require("typeutils")
+local assertions = require("luatypechecks.assertions")
 
 ---
 -- @table instance
@@ -15,7 +15,7 @@ local GameSettings = middleclass("GameSettings")
 -- @tparam number side_count [0, ∞)
 -- @treturn GameSettings
 function GameSettings:initialize(side_count)
-  assert(typeutils.is_positive_number(side_count))
+  assertions.is_number(side_count)
 
   self.side_count = side_count
 end
