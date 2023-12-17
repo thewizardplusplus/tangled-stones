@@ -3,7 +3,8 @@
 
 local middleclass = require("middleclass")
 local mlib = require("mlib")
-local typeutils = require("typeutils")
+local assertions = require("luatypechecks.assertions")
+local checks = require("luatypechecks.checks")
 local Rectangle = require("models.rectangle")
 local Selection = require("models.selection")
 local physics = require("physics")
@@ -27,10 +28,10 @@ local StoneGroup = middleclass("StoneGroup")
 -- @treturn {windfield.Collider,...} stones
 -- @treturn {[windfield.Collider]=bool,...} stone index
 function StoneGroup.static._make_stones(world, screen, side_count, grid_step)
-  assert(type(world) == "table")
-  assert(typeutils.is_instance(screen, Rectangle))
-  assert(typeutils.is_positive_number(side_count))
-  assert(typeutils.is_positive_number(grid_step, screen.height))
+  assertions.is_table(world)
+  assertions.is_instance(screen, Rectangle)
+  assertions.is_number(side_count)
+  assertions.is_number(grid_step)
 
   local stones = {}
   local stone_index = {}
@@ -59,12 +60,14 @@ end
 -- @tparam {windfield.Collider,...} stones
 -- @treturn {[windfield.Collider]=windfield.Collider,...} stone pairs
 function StoneGroup.static._make_joints(world, stones)
-  assert(type(world) == "table")
-  assert(type(stones) == "table")
+  assertions.is_table(world)
+  assertions.is_sequence(stones, checks.is_table)
 
   local stone_pairs = {}
   local prev_stone = nil
   physics.process_colliders(stones, function(stone)
+    assertions.is_table(stone)
+
     if not prev_stone then
       prev_stone = stone
       return
@@ -98,9 +101,9 @@ end
 -- @tparam number side_count [0, ∞)
 -- @treturn StoneGroup
 function StoneGroup:initialize(world, screen, side_count)
-  assert(type(world) == "table")
-  assert(typeutils.is_instance(screen, Rectangle))
-  assert(typeutils.is_positive_number(side_count))
+  assertions.is_table(world)
+  assertions.is_instance(screen, Rectangle)
+  assertions.is_number(side_count)
 
   self._grid_step = screen.height / (side_count + 4)
   self._stones, self._stone_index =
@@ -132,9 +135,9 @@ end
 -- @tparam number x [0, ∞)
 -- @tparam number y [0, ∞)
 function StoneGroup:select_stones(world, x, y)
-  assert(type(world) == "table")
-  assert(typeutils.is_positive_number(x))
-  assert(typeutils.is_positive_number(y))
+  assertions.is_table(world)
+  assertions.is_number(x)
+  assertions.is_number(y)
 
   local primary_stone = nil
   local minimal_distance = math.huge
@@ -162,11 +165,13 @@ end
 -- @tparam Rectangle screen
 -- @tparam number side_count [0, ∞)
 function StoneGroup:reset(world, screen, side_count)
-  assert(type(world) == "table")
-  assert(typeutils.is_instance(screen, Rectangle))
-  assert(typeutils.is_positive_number(side_count))
+  assertions.is_table(world)
+  assertions.is_instance(screen, Rectangle)
+  assertions.is_number(side_count)
 
   physics.process_colliders(self._stones, function(stone)
+    assertions.is_table(stone)
+
     stone:destroy()
   end)
 
