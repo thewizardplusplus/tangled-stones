@@ -32,6 +32,12 @@ function Selection:stones()
 end
 
 ---
+-- @treturn bool
+function Selection:is_activated()
+  return self.stone_joint ~= nil
+end
+
+---
 -- @tparam windfield.World world
 -- @tparam number x [0, ∞)
 -- @tparam number y [0, ∞)
