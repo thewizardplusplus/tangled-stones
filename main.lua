@@ -120,6 +120,10 @@ function love.mousepressed(x, y)
   assertions.is_number(x)
   assertions.is_number(y)
 
+  if selection and selection:is_activated() then
+    return
+  end
+
   selection = stones:select_stones(world, x, y)
   selection:activate(world, x, y)
 end
