@@ -4,7 +4,7 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local windfield = require("windfield")
 local assertions = require("luatypechecks.assertions")
-local typeutils = require("typeutils")
+local jsonutils = require("jsonutils")
 local Rectangle = require("models.rectangle")
 local GameSettings = require("models.gamesettings")
 local BorderGroup = require("groups.bordergroup")
@@ -46,7 +46,7 @@ end
 local function _load_game_settings(path)
   assertions.is_string(path)
 
-  local data, err = typeutils.load_from_json(path, {
+  local data, err = jsonutils.load_from_json(path, {
     type = "object",
     required = {"side_count"},
     properties = {

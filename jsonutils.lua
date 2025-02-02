@@ -1,13 +1,13 @@
 -- luacheck: no max comment line length
 
 ---
--- @module typeutils
+-- @module jsonutils
 
 local assertions = require("luatypechecks.assertions")
 local checks = require("luatypechecks.checks")
 local json = require("luaserialization.json")
 
-local typeutils = {}
+local jsonutils = {}
 
 ---
 -- @tparam string path
@@ -15,7 +15,7 @@ local typeutils = {}
 -- @tparam[optchain] {[string]=func,...} constructors constructors for tables with the `__name` property; the values should be `func(options: tab): tab`; the constructor can either return an error as the second result or throw it as an exception
 -- @treturn any
 -- @error error message
-function typeutils.load_from_json(path, schema, constructors)
+function jsonutils.load_from_json(path, schema, constructors)
   assertions.is_string(path)
   assertions.is_table(schema)
   assertions.is_table_or_nil(constructors, checks.is_string, checks.is_callable)
@@ -33,4 +33,4 @@ function typeutils.load_from_json(path, schema, constructors)
   return data
 end
 
-return typeutils
+return jsonutils
