@@ -17,6 +17,37 @@ GameSettings:include(Nameable)
 GameSettings:include(Stringifiable)
 
 ---
+-- @function schema
+-- @static
+-- @treturn tab JSON Schema for this class
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+function GameSettings.static.schema()
+  return {
+    type = "object",
+    required = {"side_count"},
+    properties = {
+      side_count = {
+        type = "number",
+        minimum = 0,
+      },
+    },
+  }
+end
+
+---
+-- @function from_options
+-- @static
+-- @tparam tab options constructor options conforming to the JSON Schema
+--   returned by @{GameSettings.schema|GameSettings.schema()}
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+-- @treturn GameSettings
+function GameSettings.static.from_options(options)
+  assertions.is_table(options)
+
+  return GameSettings:new(options.side_count)
+end
+
+---
 -- @function new
 -- @tparam number side_count [0, ∞)
 -- @treturn GameSettings
