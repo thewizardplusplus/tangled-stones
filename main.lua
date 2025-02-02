@@ -4,7 +4,7 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local windfield = require("windfield")
 local assertions = require("luatypechecks.assertions")
-local typeutils = require("typeutils")
+local json = require("luaserialization.json")
 local Rectangle = require("models.rectangle")
 local GameSettings = require("models.gamesettings")
 local BorderGroup = require("groups.bordergroup")
@@ -46,21 +46,22 @@ end
 local function _load_game_settings(path)
   assertions.is_string(path)
 
-  local data, loading_err = typeutils.load_json(path, {
-    type = "object",
-    required = {"side_count"},
-    properties = {
-      side_count = {
-        type = "number",
-        minimum = 0,
-      },
-    },
-  })
-  if not data then
-    return nil, "unable to load the game settings: " .. loading_err
+  local settings, err = json.load_from_json( -- luacheck: no redefined
+    path,
+    GameSettings.schema(),
+    { GameSettings = GameSettings.from_options },
+    function(path) -- luacheck: no redefined
+      assertions.is_string(path)
+
+      local data, err = love.filesystem.read(path)
+      return data, data == nil and err or nil
+    end
+  )
+  if not settings then
+    return nil, "unable to load the game settings: " .. err
   end
 
-  return GameSettings:new(data.side_count)
+  return settings
 end
 
 function love.load()
