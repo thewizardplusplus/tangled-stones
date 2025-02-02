@@ -8,6 +8,7 @@ for _, module in ipairs({
   "models.gamesettings",
   "models.rectangle",
   "models.stats",
+  "models.uiupdate",
 }) do
   require(module .. "_test")
 end
