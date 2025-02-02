@@ -5,6 +5,7 @@ package.path = table.concat(require_paths, ";")
 local luaunit = require("luaunit")
 
 for _, module in ipairs({
+  "models.gamesettings",
 }) do
   require(module .. "_test")
 end
