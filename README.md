@@ -3,6 +3,7 @@
 [![doc:build](https://github.com/thewizardplusplus/tangled-stones/actions/workflows/doc.yaml/badge.svg)](https://github.com/thewizardplusplus/tangled-stones/actions/workflows/doc.yaml)
 [![doc:link](https://img.shields.io/badge/doc%3Alink-link-blue?logo=github)](https://thewizardplusplus.github.io/tangled-stones/)
 [![lint](https://github.com/thewizardplusplus/tangled-stones/actions/workflows/lint.yaml/badge.svg)](https://github.com/thewizardplusplus/tangled-stones/actions/workflows/lint.yaml)
+[![test](https://github.com/thewizardplusplus/tangled-stones/actions/workflows/test.yaml/badge.svg)](https://github.com/thewizardplusplus/tangled-stones/actions/workflows/test.yaml)
 
 ![](docs/screenshot.png)
 
