@@ -46,7 +46,7 @@ end
 local function _load_game_settings(path)
   assertions.is_string(path)
 
-  local data, loading_err = typeutils.load_json(path, {
+  local data, err = typeutils.load_from_json(path, {
     type = "object",
     required = {"side_count"},
     properties = {
@@ -57,7 +57,7 @@ local function _load_game_settings(path)
     },
   })
   if not data then
-    return nil, "unable to load the game settings: " .. loading_err
+    return nil, "unable to load the game settings: " .. err
   end
 
   return GameSettings:new(data.side_count)
