@@ -1,8 +1,12 @@
+-- luacheck: no max comment line length
+
 ---
 -- @classmod Rectangle
 
 local middleclass = require("middleclass")
 local assertions = require("luatypechecks.assertions")
+local Nameable = require("luaserialization.nameable")
+local Stringifiable = require("luaserialization.stringifiable")
 
 ---
 -- @table instance
@@ -12,6 +16,8 @@ local assertions = require("luatypechecks.assertions")
 -- @tfield number height [0, ∞)
 
 local Rectangle = middleclass("Rectangle")
+Rectangle:include(Nameable)
+Rectangle:include(Stringifiable)
 
 ---
 -- @function new
@@ -31,5 +37,22 @@ function Rectangle:initialize(x, y, width, height)
   self.width = width
   self.height = height
 end
+
+---
+-- @treturn tab table with instance fields
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+function Rectangle:__data()
+  return {
+    x = self.x,
+    y = self.y,
+    width = self.width,
+    height = self.height,
+  }
+end
+
+---
+-- @function __tostring
+-- @treturn string stringified table with instance fields
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
 
 return Rectangle
