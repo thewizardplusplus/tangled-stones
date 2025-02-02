@@ -87,7 +87,7 @@ function ref_mt:resolve()
       -- TODO: notrmalize path (if there is people mean enough to put '.' or
       -- '..' components)
       for part in fragment:gmatch('[^/]+') do
-        part = decodepart(part)
+        local part = decodepart(part)
         local new = schema[part]
         if not new then
           error(string.format('reference not found: %s#%s (at %q)',
