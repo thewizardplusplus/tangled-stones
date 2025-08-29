@@ -18,6 +18,36 @@ Stats:include(Nameable)
 Stats:include(Stringifiable)
 
 ---
+-- @function schema
+-- @static
+-- @treturn tab JSON Schema for this class
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+function Stats.static.schema()
+  return {
+    type = "object",
+    required = {"current", "minimal"},
+    properties = {
+      current = { ["$ref"] = "#/definitions/positive_number" },
+      minimal = { ["$ref"] = "#/definitions/positive_number" },
+    },
+    definitions = { positive_number = { type = "number", minimum = 0 } },
+  }
+end
+
+---
+-- @function from_options
+-- @static
+-- @tparam tab options constructor options conforming to the JSON Schema
+--   returned by @{Stats.schema|Stats.schema()}
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+-- @treturn Stats
+function Stats.static.from_options(options)
+  assertions.is_table(options)
+
+  return Stats:new(options.current, options.minimal)
+end
+
+---
 -- @function new
 -- @tparam number current [0, ∞)
 -- @tparam number minimal [0, ∞)
