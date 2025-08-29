@@ -2,14 +2,14 @@
 -- @classmod StatsStorage
 
 local middleclass = require("middleclass")
-local flatdb = require("flatdb")
 local assertions = require("luatypechecks.assertions")
+local json = require("luaserialization.json")
 local Stats = require("models.stats")
 
 ---
 -- @table instance
--- @tfield FlatDB _db
--- @tfield number _current
+-- @tfield string _path
+-- @tfield Stats _stats
 
 local StatsStorage = middleclass("StatsStorage")
 
@@ -22,43 +22,43 @@ function StatsStorage:initialize(path, initial_minimal)
   assertions.is_string(path)
   assertions.is_number(initial_minimal)
 
-  self._db = flatdb(path)
-  if not self._db.stats then
-    self._db.stats = {
-      minimal = initial_minimal,
-    }
+  local stats, err = json.load_from_json(
+    path,
+    Stats.schema(),
+    { Stats = Stats.from_options },
+    function(path) -- luacheck: no redefined
+      assertions.is_string(path)
+
+      local data, err = love.filesystem.read(path)
+      return data, data == nil and err or nil
+    end
+  )
+  if not stats then
+    print("unable to load the stats: " .. err)
+
+    stats = Stats:new(0, initial_minimal)
   end
 
-  self:reset()
+  self._path = path
+  self._stats = stats
+
+  self._stats:reset()
 end
 
 ---
 -- @treturn Stats
 function StatsStorage:stats()
-  return Stats:new(self._current, self._db.stats.minimal)
+  return self._stats
 end
 
 ---
--- @function increment
-function StatsStorage:increment()
-  self._current = self._current + 1
-end
-
----
--- @function reset
-function StatsStorage:reset()
-  self._current = 0
-end
-
----
--- @function finish
-function StatsStorage:finish()
-  if self._db.stats.minimal > self._current then
-    self._db.stats.minimal = self._current
-    self._db:save()
+-- @function save
+function StatsStorage:save()
+  local ok, err =
+    json.save_to_json(self._path, self._stats, love.filesystem.write)
+  if not ok then
+    print("unable to save the stats: " .. err)
   end
-
-  self:reset()
 end
 
 return StatsStorage

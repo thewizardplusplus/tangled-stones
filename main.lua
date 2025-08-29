@@ -9,7 +9,7 @@ local Rectangle = require("models.rectangle")
 local GameSettings = require("models.gamesettings")
 local BorderGroup = require("groups.bordergroup")
 local StoneGroup = require("groups.stonegroup")
-local statsfactory = require("stats.statsfactory")
+local StatsStorage = require("stats.statsstorage")
 local ui = require("ui")
 local physics = require("physics")
 require("luatable")
@@ -78,8 +78,7 @@ function love.load()
   borders = BorderGroup:new(world, screen, stones:stone_size())
 
   local initial_stats_minimal = math.pow(settings.side_count, 2) * 10
-  stats_storage =
-    assert(statsfactory.create_stats_storage("stats-db", initial_stats_minimal))
+  stats_storage = StatsStorage:new("stats.json", initial_stats_minimal)
 end
 
 function love.draw()
@@ -98,7 +97,7 @@ function love.update(dt)
   local update = ui.update(screen, stats_storage:stats())
   if update.reset then
     stones:reset(world, screen, settings.side_count)
-    stats_storage:reset()
+    stats_storage:stats():reset()
   end
 end
 
@@ -106,7 +105,7 @@ function love.resize()
   screen = _make_screen()
   stones:reset(world, screen, settings.side_count)
   borders:reset(world, screen, stones:stone_size())
-  stats_storage:reset()
+  stats_storage:stats():reset()
 end
 
 function love.keypressed(key)
@@ -129,7 +128,7 @@ function love.mousereleased()
   selection:deactivate()
 
   if selection.primary_stone then
-    stats_storage:increment()
+    stats_storage:stats():increment()
   end
 
   physics.process_colliders(selection:stones(), function(stone)
@@ -141,6 +140,10 @@ function love.mousereleased()
   end)
   if stones:count() == 0 then
     stones:reset(world, screen, settings.side_count)
-    stats_storage:finish()
+
+    local was_updated = stats_storage:stats():finish()
+    if was_updated then
+      stats_storage:save()
+    end
   end
 end

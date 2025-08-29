@@ -29,7 +29,6 @@ _**Disclaimer:** this game was written directly on an Android smartphone with th
     - current move count;
     - minimal move count;
   - autodetecting an initial minimum of a move count based on a count of stones;
-  - storing in the [FlatDB](https://github.com/uleelx/FlatDB) database;
 - initialization:
   - creating a game field frame:
     - based on a window size;

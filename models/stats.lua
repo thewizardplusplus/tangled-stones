@@ -18,6 +18,37 @@ Stats:include(Nameable)
 Stats:include(Stringifiable)
 
 ---
+-- @function schema
+-- @static
+-- @treturn tab JSON Schema for this class
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+function Stats.static.schema()
+  local positive_number = { type = "number", minimum = 0 }
+
+  return {
+    type = "object",
+    required = {"current", "minimal"},
+    properties = {
+      current = positive_number,
+      minimal = positive_number,
+    },
+  }
+end
+
+---
+-- @function from_options
+-- @static
+-- @tparam tab options constructor options conforming to the JSON Schema
+--   returned by @{Stats.schema|Stats.schema()}
+--   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+-- @treturn Stats
+function Stats.static.from_options(options)
+  assertions.is_table(options)
+
+  return Stats:new(options.current, options.minimal)
+end
+
+---
 -- @function new
 -- @tparam number current [0, ∞)
 -- @tparam number minimal [0, ∞)
@@ -44,5 +75,29 @@ end
 -- @function __tostring
 -- @treturn string stringified table with instance fields
 --   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+
+---
+-- @function increment
+function Stats:increment()
+  self.current = self.current + 1
+end
+
+---
+-- @function reset
+function Stats:reset()
+  self.current = 0
+end
+
+---
+-- @treturn bool whether the minimal move count was updated
+function Stats:finish()
+  local was_updated = self.minimal > self.current
+  if was_updated then
+    self.minimal = self.current
+  end
+
+  self:reset()
+  return was_updated
+end
 
 return Stats

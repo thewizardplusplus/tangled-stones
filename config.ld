@@ -17,7 +17,6 @@ file = {
   "models/uiupdate.lua",
   "groups/stonegroup.lua",
   "groups/bordergroup.lua",
-  "stats/statsfactory.lua",
   "stats/statsstorage.lua",
 }
 topics = {
