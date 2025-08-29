@@ -14,6 +14,23 @@ local Stats = require("models.stats")
 local StatsStorage = middleclass("StatsStorage")
 
 ---
+-- @tparam string path
+-- @tparam number initial_minimal [0, ∞)
+-- @treturn StatsStorage
+-- @error error message
+function StatsStorage.static.create(path, initial_minimal)
+  assertions.is_string(path)
+  assertions.is_number(initial_minimal)
+
+  local ok = love.filesystem.createDirectory(path)
+  if not ok then
+    return nil, "unable to create the stats DB"
+  end
+
+  return StatsStorage:new(path, initial_minimal)
+end
+
+---
 -- @function new
 -- @tparam string path
 -- @tparam number initial_minimal [0, ∞)
