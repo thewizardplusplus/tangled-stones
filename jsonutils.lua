@@ -11,6 +11,27 @@ local jsonutils = {}
 
 ---
 -- @tparam string path
+-- @tparam any value
+-- @treturn bool
+-- @error error message
+function jsonutils.save_to_json(path, value)
+  assertions.is_string(path)
+
+  local data, err = json.to_json(value)
+  if not data then
+    return false, "unable to serialize data: " .. err
+  end
+
+  local ok, err = love.filesystem.write(path, data) -- luacheck: no redefined
+  if not ok then
+    return false, "unable to write data: " .. err
+  end
+
+  return true
+end
+
+---
+-- @tparam string path
 -- @tparam tab schema JSON Schema
 -- @tparam[optchain] {[string]=func,...} constructors constructors for tables with the `__name` property; the values should be `func(options: tab): tab`; the constructor can either return an error as the second result or throw it as an exception
 -- @treturn any
