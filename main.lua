@@ -13,7 +13,6 @@ local StatsStorage = require("stats.statsstorage")
 local ui = require("ui")
 local physics = require("physics")
 require("luatable")
-require("compat52")
 
 local world = nil -- windfield.World
 local screen = nil -- models.Rectangle
