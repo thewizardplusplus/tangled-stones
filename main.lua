@@ -46,21 +46,31 @@ end
 local function _load_game_settings(path)
   assertions.is_string(path)
 
-  local data, err = jsonutils.load_from_json(path, {
-    type = "object",
-    required = {"side_count"},
-    properties = {
-      side_count = {
-        type = "number",
-        minimum = 0,
+  local settings, err = jsonutils.load_from_json(
+    path,
+    {
+      type = "object",
+      required = {"side_count"},
+      properties = {
+        side_count = {
+          type = "number",
+          minimum = 0,
+        },
       },
     },
-  })
-  if not data then
+    {
+      GameSettings = function(options)
+        assertions.is_table(options)
+
+        return GameSettings:new(options.side_count)
+      end,
+    }
+  )
+  if not settings then
     return nil, "unable to load the game settings: " .. err
   end
 
-  return GameSettings:new(data.side_count)
+  return settings
 end
 
 function love.load()
