@@ -9,6 +9,7 @@ local physics = require("physics")
 -- @table instance
 -- @tfield windfield.Collider primary_stone
 -- @tfield windfield.Collider secondary_stone
+-- @tfield Joint _stone_joint
 
 local Selection = middleclass("Selection")
 
@@ -32,6 +33,12 @@ function Selection:stones()
 end
 
 ---
+-- @treturn bool
+function Selection:is_activated()
+  return self._stone_joint ~= nil
+end
+
+---
 -- @tparam windfield.World world
 -- @tparam number x [0, ∞)
 -- @tparam number y [0, ∞)
@@ -43,7 +50,7 @@ function Selection:activate(world, x, y)
   self:_set_kind("dynamic")
 
   if self.primary_stone then
-    self.stone_joint = world:addJoint("MouseJoint", self.primary_stone, x, y)
+    self._stone_joint = world:addJoint("MouseJoint", self.primary_stone, x, y)
   end
 end
 
@@ -54,8 +61,8 @@ function Selection:update(x, y)
   assertions.is_number(x)
   assertions.is_number(y)
 
-  if self.stone_joint then
-    self.stone_joint:setTarget(x, y)
+  if self._stone_joint then
+    self._stone_joint:setTarget(x, y)
   end
 end
 
@@ -64,9 +71,9 @@ end
 function Selection:deactivate()
   self:_set_kind("static")
 
-  if self.stone_joint then
-    self.stone_joint:destroy()
-    self.stone_joint = nil
+  if self._stone_joint then
+    self._stone_joint:destroy()
+    self._stone_joint = nil
   end
 end
 
