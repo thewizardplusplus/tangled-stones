@@ -10,7 +10,7 @@ local Stringifiable = require("luaserialization.stringifiable")
 
 ---
 -- @table instance
--- @tfield number side_count
+-- @tfield int side_count [1, ∞)
 
 local GameSettings = middleclass("GameSettings")
 GameSettings:include(Nameable)
@@ -28,7 +28,8 @@ function GameSettings.static.schema()
     properties = {
       side_count = {
         type = "number",
-        minimum = 0,
+        minimum = 1,
+        multipleOf = 1,
       },
     },
   }
@@ -49,10 +50,10 @@ end
 
 ---
 -- @function new
--- @tparam number side_count [0, ∞)
+-- @tparam int side_count [1, ∞)
 -- @treturn GameSettings
 function GameSettings:initialize(side_count)
-  assertions.is_number(side_count)
+  assertions.is_integer(side_count)
 
   self.side_count = side_count
 end
