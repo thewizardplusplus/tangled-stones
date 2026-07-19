@@ -1,3 +1,5 @@
+-- luacheck: no max comment line length
+
 ---
 -- @classmod StatsStorage
 
@@ -5,45 +7,49 @@ local middleclass = require("middleclass")
 local assertions = require("luatypechecks.assertions")
 local json = require("luaserialization.json")
 local Stats = require("models.stats")
+local StatsGroup = require("models.statsgroup")
 
 ---
 -- @table instance
 -- @tfield string _path
--- @tfield Stats _stats
+-- @tfield StatsGroup _stats_group
 
 local StatsStorage = middleclass("StatsStorage")
 
 ---
 -- @tparam string path
--- @tparam number initial_minimal [0, ∞)
+-- @tparam int side_count [1, ∞)
 -- @treturn StatsStorage
 -- @error error message
-function StatsStorage.static.create(path, initial_minimal)
+function StatsStorage.static.create(path, side_count)
   assertions.is_string(path)
-  assertions.is_number(initial_minimal)
+  assertions.is_integer(side_count)
 
   local ok = love.filesystem.createDirectory(path)
   if not ok then
     return nil, "unable to create the stats DB"
   end
 
-  return StatsStorage:new(path, initial_minimal)
+  return StatsStorage:new(path, side_count)
 end
 
 ---
 -- @function new
 -- @tparam string path
--- @tparam number initial_minimal [0, ∞)
+-- @tparam int side_count [1, ∞)
 -- @treturn StatsStorage
-function StatsStorage:initialize(path, initial_minimal)
+function StatsStorage:initialize(path, side_count)
   assertions.is_string(path)
-  assertions.is_number(initial_minimal)
+  assertions.is_integer(side_count)
 
   local completed_path = path .. "/db.json"
-  local stats, err = json.load_from_json(
+  local stats_group, err = json.load_from_json(
     completed_path,
-    Stats.schema(),
-    { Stats = Stats.from_options },
+    StatsGroup.schema(),
+    {
+      Stats = Stats.from_options,
+      StatsGroup = StatsGroup.from_options,
+    },
     function(path) -- luacheck: no redefined
       assertions.is_string(path)
 
@@ -51,50 +57,32 @@ function StatsStorage:initialize(path, initial_minimal)
       return data, data == nil and err or nil
     end
   )
-  if not stats then
+  if not stats_group then
     print("unable to load the stats: " .. err)
 
-    stats = Stats:new(0, initial_minimal)
+    stats_group = StatsGroup:new(side_count)
+  else
+    stats_group:set_side_count(side_count)
   end
 
   self._path = completed_path
-  self._stats = stats
-
-  self:reset()
+  self._stats_group = stats_group
 end
 
 ---
--- @treturn Stats
-function StatsStorage:stats()
-  return self._stats
+-- @treturn StatsGroup
+function StatsStorage:stats_group()
+  return self._stats_group
 end
 
 ---
--- @function increment
-function StatsStorage:increment()
-  self._stats.current = self._stats.current + 1
-end
-
----
--- @function reset
-function StatsStorage:reset()
-  self._stats.current = 0
-end
-
----
--- @function finish
-function StatsStorage:finish()
-  if self._stats.minimal > self._stats.current then
-    self._stats.minimal = self._stats.current
-
-    local ok, err =
-      json.save_to_json(self._path, self._stats, love.filesystem.write)
-    if not ok then
-      print("unable to save the stats: " .. err)
-    end
+-- @function save
+function StatsStorage:save()
+  local ok, err =
+    json.save_to_json(self._path, self._stats_group, love.filesystem.write)
+  if not ok then
+    print("unable to save the stats: " .. err)
   end
-
-  self:reset()
 end
 
 return StatsStorage

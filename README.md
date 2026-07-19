@@ -28,6 +28,7 @@ _**Disclaimer:** this game was written directly on an Android smartphone with th
   - metrics:
     - current move count;
     - minimal move count;
+  - separate stats for each stone grid size;
   - autodetecting an initial minimum of a move count based on a count of stones;
 - initialization:
   - creating a game field frame:
