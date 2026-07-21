@@ -3,7 +3,7 @@ exclude_files = {
   "vendor/",
 }
 globals = {
-  table = { fields = { shuffle = {} } },
+  table = { fields = { shuffle = {}, find = {} } },
   "love",
 }
 max_line_length = 80
