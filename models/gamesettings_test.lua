@@ -5,9 +5,13 @@ local GameSettings = require("models.gamesettings")
 TestGameSettings = {}
 
 function TestGameSettings.test_tostring()
-  local settings = GameSettings:new(23)
+  local settings = GameSettings:new(23, true)
   local text = tostring(settings)
 
   luaunit.assert_is_string(text)
-  luaunit.assert_equals(text, "{__name = \"GameSettings\",side_count = 23}")
+  luaunit.assert_equals(text, "{" ..
+    "__name = \"GameSettings\"," ..
+    "auto_increment_side_count = true," ..
+    "side_count = 23" ..
+  "}")
 end

@@ -17,23 +17,6 @@ local StatsGroup = require("models.statsgroup")
 local StatsStorage = middleclass("StatsStorage")
 
 ---
--- @tparam string path
--- @tparam int side_count [1, ∞)
--- @treturn StatsStorage
--- @error error message
-function StatsStorage.static.create(path, side_count)
-  assertions.is_string(path)
-  assertions.is_integer(side_count)
-
-  local ok = love.filesystem.createDirectory(path)
-  if not ok then
-    return nil, "unable to create the stats DB"
-  end
-
-  return StatsStorage:new(path, side_count)
-end
-
----
 -- @function new
 -- @tparam string path
 -- @tparam int side_count [1, ∞)
@@ -42,9 +25,8 @@ function StatsStorage:initialize(path, side_count)
   assertions.is_string(path)
   assertions.is_integer(side_count)
 
-  local completed_path = path .. "/db.json"
   local stats_group, err = json.load_from_json(
-    completed_path,
+    path,
     StatsGroup.schema(),
     {
       Stats = Stats.from_options,
@@ -65,7 +47,7 @@ function StatsStorage:initialize(path, side_count)
     stats_group:set_side_count(side_count)
   end
 
-  self._path = completed_path
+  self._path = path
   self._stats_group = stats_group
 end
 
