@@ -5,11 +5,11 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 local windfield = require("windfield")
 local assertions = require("luatypechecks.assertions")
 local json = require("luaserialization.json")
-local Rectangle = require("models.rectangle")
 local GameSettings = require("models.gamesettings")
 local BorderGroup = require("groups.bordergroup")
 local StoneGroup = require("groups.stonegroup")
 local StatsStorage = require("stats.statsstorage")
+local window = require("window")
 local ui = require("ui")
 local physics = require("physics")
 require("luatable")
@@ -21,26 +21,6 @@ local stones = nil -- groups.StoneGroup
 local borders = nil -- groups.BorderGroup
 local selection = nil -- models.Selection
 local stats_storage = nil -- stats.StatsStorage
-
-local function _enter_fullscreen()
-  local is_mobile_os = love.system.getOS() == "Android"
-    or love.system.getOS() == "iOS"
-  if not is_mobile_os then
-    return true
-  end
-
-  local ok = love.window.setFullscreen(true, "desktop")
-  if not ok then
-    return false, "unable to enter fullscreen"
-  end
-
-  return true
-end
-
-local function _make_screen()
-  local x, y, width, height = love.window.getSafeArea()
-  return Rectangle:new(x, y, width, height)
-end
 
 local function _load_game_settings(path)
   assertions.is_string(path)
@@ -66,12 +46,12 @@ end
 function love.load()
   math.randomseed(os.time())
   love.setDeprecationOutput(true)
-  assert(_enter_fullscreen())
+  assert(window.enter_fullscreen())
 
   world = windfield.newWorld(0, 0, true)
   world:setQueryDebugDrawing(true)
 
-  screen = _make_screen()
+  screen = window.create_screen()
   settings = assert(_load_game_settings("game_settings.json"))
   stones = StoneGroup:new(world, screen, settings.side_count)
   borders = BorderGroup:new(world, screen, stones:stone_size())
@@ -101,7 +81,7 @@ function love.update(dt)
 end
 
 function love.resize()
-  screen = _make_screen()
+  screen = window.create_screen()
   stones:reset(world, screen, settings.side_count)
   borders:reset(world, screen, stones:stone_size())
   stats_storage:reset()
