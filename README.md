@@ -30,15 +30,23 @@ _**Disclaimer:** this game was written directly on an Android smartphone with th
     - minimal move count;
   - separate stats for each stone grid size;
   - autodetecting an initial minimum of a move count based on a count of stones;
+- game progression:
+  - increasing the stone grid side by one after each completed level;
+  - saving the current grid size between game launches;
+  - supporting a fixed grid size via the game setting;
 - initialization:
   - creating a game field frame:
     - based on a window size;
     - splitting a bottom border for destroying stones;
   - creating a stone grid:
-    - based on a window size;
-    - storing a count of stones in a game configuration:
+    - based on:
+      - a window size;
+      - the game settings;
+    - storing a count of stones in the game settings:
       - loading from a JSON file;
       - validation via the JSON Schema;
+      - loading defaults from the game source;
+      - loading and saving current values in the game save directory;
   - creating joins between stone pairs:
     - automatically when creating stones;
     - random shuffling of joins;
@@ -63,6 +71,8 @@ _**Disclaimer:** this game was written directly on an Android smartphone with th
       - resetting game stats;
       - saving game stats:
         - if there are changes only;
+      - starting the next level:
+        - with an increased grid size when automatic incrementing is enabled;
   - resizing a window:
     - recreating:
       - game field frame;

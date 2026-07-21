@@ -11,6 +11,7 @@ local Stringifiable = require("luaserialization.stringifiable")
 ---
 -- @table instance
 -- @tfield int side_count [1, ∞)
+-- @tfield bool auto_increment_side_count
 
 local GameSettings = middleclass("GameSettings")
 GameSettings:include(Nameable)
@@ -24,9 +25,10 @@ GameSettings:include(Stringifiable)
 function GameSettings.static.schema()
   return {
     type = "object",
-    required = {"side_count"},
+    required = {"side_count", "auto_increment_side_count"},
     properties = {
       side_count = { type = "number", minimum = 1, multipleOf = 1 },
+      auto_increment_side_count = { type = "boolean" },
     },
   }
 end
@@ -41,17 +43,20 @@ end
 function GameSettings.static.from_options(options)
   assertions.is_table(options)
 
-  return GameSettings:new(options.side_count)
+  return GameSettings:new(options.side_count, options.auto_increment_side_count)
 end
 
 ---
 -- @function new
 -- @tparam int side_count [1, ∞)
+-- @tparam bool auto_increment_side_count
 -- @treturn GameSettings
-function GameSettings:initialize(side_count)
+function GameSettings:initialize(side_count, auto_increment_side_count)
   assertions.is_integer(side_count)
+  assertions.is_boolean(auto_increment_side_count)
 
   self.side_count = side_count
+  self.auto_increment_side_count = auto_increment_side_count
 end
 
 ---
@@ -60,6 +65,7 @@ end
 function GameSettings:__data()
   return {
     side_count = self.side_count,
+    auto_increment_side_count = self.auto_increment_side_count,
   }
 end
 

@@ -17,7 +17,8 @@ file = {
   "models/uiupdate.lua",
   "groups/stonegroup.lua",
   "groups/bordergroup.lua",
-  "stats/statsstorage.lua",
+  "storages/settingsstorage.lua",
+  "storages/statsstorage.lua",
 }
 topics = {
   "README.md",
