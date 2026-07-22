@@ -15,3 +15,31 @@ function TestGameSettings.test_tostring()
     "side_count = 23" ..
   "}")
 end
+
+function TestGameSettings.test_increment_side_count()
+  local settings = GameSettings:new(GameSettings.MAX_SIDE_COUNT - 1, true)
+
+  local was_incremented = settings:increment_side_count()
+
+  luaunit.assert_true(was_incremented)
+  luaunit.assert_equals(settings.side_count, GameSettings.MAX_SIDE_COUNT)
+end
+
+function TestGameSettings.test_increment_side_count_at_maximum()
+  local settings = GameSettings:new(GameSettings.MAX_SIDE_COUNT, true)
+
+  local was_incremented = settings:increment_side_count()
+
+  luaunit.assert_false(was_incremented)
+  luaunit.assert_equals(settings.side_count, GameSettings.MAX_SIDE_COUNT)
+end
+
+function TestGameSettings.test_increment_side_count_when_disabled()
+  local side_count = 5
+  local settings = GameSettings:new(side_count, false)
+
+  local was_incremented = settings:increment_side_count()
+
+  luaunit.assert_false(was_incremented)
+  luaunit.assert_equals(settings.side_count, side_count)
+end

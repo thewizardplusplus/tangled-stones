@@ -26,7 +26,7 @@ If a stone is moved outside the barrier, it is removed from the game field.
 
 A level is completed when all stones have been removed from the game field. The game then creates a new grid.
 
-By default, the first level has one stone. After each completed level, the number of stones along each side of the grid increases by one. The current grid size is saved and restored on the next game launch.
+By default, the first level has one stone. After each completed level, the number of stones along each side of the grid increases by one up to a maximum of 20. The current grid size is saved and restored on the next game launch.
 
 This behavior is controlled by the settings and is enabled by default. If it is disabled, every new level uses the same grid size.
 

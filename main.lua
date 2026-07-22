@@ -107,15 +107,15 @@ function love.mousereleased()
     end
 
     local settings = settings_storage:settings()
-    if settings.auto_increment_side_count then
-      settings.side_count = settings.side_count + 1
+    local was_incremented = settings:increment_side_count()
+    if was_incremented then
       settings_storage:save()
 
       stats_storage:stats_group():set_side_count(settings.side_count)
     end
 
     stones:reset(world, screen, settings.side_count)
-    if settings.auto_increment_side_count then
+    if was_incremented then
       borders:reset(world, screen, stones:stone_size())
     end
   end

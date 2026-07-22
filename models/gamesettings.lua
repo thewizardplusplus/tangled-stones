@@ -18,6 +18,12 @@ GameSettings:include(Nameable)
 GameSettings:include(Stringifiable)
 
 ---
+-- @table class
+-- @tfield int MAX_SIDE_COUNT
+-- @static
+GameSettings.static.MAX_SIDE_COUNT = 20
+
+---
 -- @function schema
 -- @static
 -- @treturn tab JSON Schema for this class
@@ -30,6 +36,7 @@ function GameSettings.static.schema()
       side_count = {
         type = "number",
         minimum = 1,
+        maximum = GameSettings.MAX_SIDE_COUNT,
         multipleOf = 1,
       },
       auto_increment_side_count = { type = "boolean" },
@@ -77,5 +84,19 @@ end
 -- @function __tostring
 -- @treturn string stringified table with instance fields
 --   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
+
+---
+-- @treturn bool whether the side count was increased
+function GameSettings:increment_side_count()
+  if
+    not self.auto_increment_side_count
+      or self.side_count >= GameSettings.MAX_SIDE_COUNT
+  then
+    return false
+  end
+
+  self.side_count = self.side_count + 1
+  return true
+end
 
 return GameSettings
