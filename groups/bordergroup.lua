@@ -14,6 +14,17 @@ local physics = require("physics")
 local BorderGroup = middleclass("BorderGroup")
 
 ---
+-- @function border_size
+-- @static
+-- @tparam Rectangle screen
+-- @treturn int
+function BorderGroup.static.border_size(screen)
+  assertions.is_instance(screen, Rectangle)
+
+  return math.floor(screen.height / 20)
+end
+
+---
 -- @function new
 -- @tparam windfield.World world
 -- @tparam Rectangle screen
@@ -24,7 +35,7 @@ function BorderGroup:initialize(world, screen, stone_size)
   assertions.is_instance(screen, Rectangle)
   assertions.is_number(stone_size)
 
-  local grid_step = screen.height / 20
+  local grid_step = BorderGroup.border_size(screen)
   self._bottom_limit = screen.y + screen.height - grid_step - stone_size / 4
 
   local top = physics.make_collider(world, "static", Rectangle:new(

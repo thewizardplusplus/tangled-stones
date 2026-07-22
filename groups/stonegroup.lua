@@ -7,6 +7,7 @@ local assertions = require("luatypechecks.assertions")
 local checks = require("luatypechecks.checks")
 local Rectangle = require("models.rectangle")
 local Selection = require("models.selection")
+local BorderGroup = require("groups.bordergroup")
 local physics = require("physics")
 
 ---
@@ -105,7 +106,8 @@ function StoneGroup:initialize(world, screen, side_count)
   assertions.is_instance(screen, Rectangle)
   assertions.is_number(side_count)
 
-  self._grid_step = screen.height / (side_count + 4)
+  local border_size = BorderGroup.border_size(screen)
+  self._grid_step = (screen.height - 2 * border_size) / (side_count + 3)
   self._stones, self._stone_index =
     StoneGroup._make_stones(world, screen, side_count, self._grid_step)
   table.shuffle(self._stones)
