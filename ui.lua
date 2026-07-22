@@ -22,55 +22,75 @@ end
 
 ---
 -- @tparam Rectangle screen
+-- @tparam int side_count [1, ∞)
 -- @tparam Stats stats
 -- @treturn UiUpdate
-function ui.update(screen, stats)
+function ui.update(screen, side_count, stats)
   assertions.is_instance(screen, Rectangle)
+  assertions.is_integer(side_count)
   assertions.is_instance(stats, Stats)
 
-  ui._update_labels(screen, stats)
+  ui._update_labels(screen, side_count, stats)
   return ui._update_buttons(screen)
 end
 
 ---
 -- @tparam Rectangle screen
+-- @tparam int side_count [1, ∞)
 -- @tparam Stats stats
-function ui._update_labels(screen, stats)
+function ui._update_labels(screen, side_count, stats)
   assertions.is_instance(screen, Rectangle)
+  assertions.is_integer(side_count)
   assertions.is_instance(stats, Stats)
 
   local grid_step = screen.height / 10
 
+  -- level size
+  suit.layout:reset(
+    screen.x + screen.width - 3.375 * grid_step,
+    screen.y + grid_step
+  )
+  suit.Label(
+    "Size:",
+    ui._create_label_options("left"),
+    suit.layout:row(1.25 * grid_step, 0.75 * grid_step)
+  )
+  suit.Label(
+    side_count,
+    ui._create_label_options("right"),
+    suit.layout:col(1.125 * grid_step, 0.75 * grid_step)
+  )
+
   -- current stats
   suit.layout:reset(
-    screen.x + screen.width - 3.5 * grid_step,
-    screen.y + grid_step
+    screen.x + screen.width - 3.375 * grid_step,
+    screen.y + 1.75 * grid_step
   )
   suit.Label(
     "Now:",
     ui._create_label_options("left"),
-    suit.layout:row(1.5 * grid_step, 0.75 * grid_step)
+    suit.layout:row(1.25 * grid_step, 0.75 * grid_step)
   )
   suit.Label(
     tostring(stats.current),
     ui._create_label_options("right"),
-    suit.layout:col(grid_step, 0.75 * grid_step)
+    suit.layout:col(1.125 * grid_step, 0.75 * grid_step)
   )
 
   -- minimal stats
   suit.layout:reset(
-    screen.x + screen.width - 3.5 * grid_step,
-    screen.y + 1.75 * grid_step
+    screen.x + screen.width - 3.375 * grid_step,
+    screen.y + 2.5 * grid_step
   )
   suit.Label(
     "Min:",
     ui._create_label_options("left"),
-    suit.layout:row(1.5 * grid_step, 0.75 * grid_step)
+    suit.layout:row(1.25 * grid_step, 0.75 * grid_step)
   )
   suit.Label(
     tostring(stats.minimal),
     ui._create_label_options("right"),
-    suit.layout:col(grid_step, 0.75 * grid_step)
+    suit.layout:col(1.125 * grid_step, 0.75 * grid_step)
   )
 end
 

@@ -55,6 +55,7 @@ _**Disclaimer:** this game was written directly on an Android smartphone with th
     - drawing join edges;
   - drawing a reset button:
     - based on a window size;
+  - drawing the current stone grid size;
   - drawing game stats:
     - based on a window size;
 - operations:
