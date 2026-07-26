@@ -16,6 +16,7 @@ require("luatable")
 
 local world = nil -- windfield.World
 local screen = nil -- models.Rectangle
+local fonts = nil -- {[string]=Font,...}
 local settings = nil -- models.GameSettings
 local stones = nil -- groups.StoneGroup
 local borders = nil -- groups.BorderGroup
@@ -52,6 +53,7 @@ function love.load()
   world:setQueryDebugDrawing(true)
 
   screen = window.create_screen()
+  fonts = ui.load_fonts(screen)
   settings = assert(_load_game_settings("game_settings.json"))
   stones = StoneGroup:new(world, screen, settings.side_count)
   borders = BorderGroup:new(world, screen, stones:stone_size())
@@ -62,7 +64,7 @@ end
 
 function love.draw()
   physics.draw(world)
-  ui.draw(screen)
+  ui.draw()
 end
 
 function love.update(dt)
@@ -73,7 +75,7 @@ function love.update(dt)
   end
   world:update(dt)
 
-  local update = ui.update(screen, stats_storage:stats())
+  local update = ui.update(screen, fonts, stats_storage:stats())
   if update.reset then
     stones:reset(world, screen, settings.side_count)
     stats_storage:reset()
@@ -82,6 +84,7 @@ end
 
 function love.resize()
   screen = window.create_screen()
+  fonts = ui.load_fonts(screen)
   stones:reset(world, screen, settings.side_count)
   borders:reset(world, screen, stones:stone_size())
   stats_storage:reset()
