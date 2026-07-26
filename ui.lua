@@ -6,6 +6,7 @@ local assertions = require("luatypechecks.assertions")
 local Rectangle = require("models.rectangle")
 local Stats = require("models.stats")
 local UiUpdate = require("models.uiupdate")
+local icons = require("constants.icons")
 
 local ui = {}
 
@@ -80,10 +81,20 @@ end
 function ui._update_buttons(screen)
   assertions.is_instance(screen, Rectangle)
 
+  local font_size = screen.height / 25
+  local icon_font = love.graphics.newFont(
+    "resources/fonts/font-awesome/font_awesome_free_7.3.0_solid_900.otf",
+    font_size
+  )
+
   local grid_step = screen.height / 10
   suit.layout:reset(screen.x + grid_step, screen.y + grid_step)
 
-  local reset_button = suit.Button("@", suit.layout:row(grid_step, grid_step))
+  local reset_button = suit.Button(
+    icons.RESET_ICON,
+    { font = icon_font },
+    suit.layout:row(grid_step, grid_step)
+  )
   return UiUpdate:new(reset_button.hit)
 end
 
