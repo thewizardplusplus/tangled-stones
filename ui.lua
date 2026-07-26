@@ -3,41 +3,61 @@
 
 local suit = require("suit")
 local assertions = require("luatypechecks.assertions")
+local checks = require("luatypechecks.checks")
 local Rectangle = require("models.rectangle")
 local Stats = require("models.stats")
 local UiUpdate = require("models.uiupdate")
 local icons = require("constants.icons")
 
+local _ICONS_FONT_PATH =
+  "resources/fonts/font-awesome/font_awesome_free_7.3.0_solid_900.otf"
+
 local ui = {}
 
 ---
 -- @tparam Rectangle screen
-function ui.draw(screen)
+-- @treturn {[string]=Font,...}
+function ui.load_fonts(screen)
   assertions.is_instance(screen, Rectangle)
 
   local font_size = screen.height / 25
-  love.graphics.setFont(love.graphics.newFont(font_size))
+  return {
+    default = love.graphics.newFont(font_size),
+    icons = love.graphics.newFont(_ICONS_FONT_PATH, font_size),
+  }
+end
 
+---
+-- @function draw
+function ui.draw()
   suit.draw()
 end
 
 ---
 -- @tparam Rectangle screen
+-- @tparam {[string]=Font,...} fonts
 -- @tparam Stats stats
 -- @treturn UiUpdate
-function ui.update(screen, stats)
+function ui.update(screen, fonts, stats)
   assertions.is_instance(screen, Rectangle)
+  assertions.is_table(fonts, checks.is_string, function(font)
+    return type(font) == "userdata"
+  end)
   assertions.is_instance(stats, Stats)
 
-  ui._update_labels(screen, stats)
-  return ui._update_buttons(screen)
+  ui._update_labels(screen, fonts, stats)
+  return ui._update_buttons(screen, fonts)
 end
 
 ---
 -- @tparam Rectangle screen
+-- @tparam {[string]=Font,...} fonts
 -- @tparam Stats stats
-function ui._update_labels(screen, stats)
+function ui._update_labels(screen, fonts, stats)
   assertions.is_instance(screen, Rectangle)
+  assertions.is_table(fonts, checks.is_string, function(font)
+    return type(font) == "userdata"
+  end)
   assertions.is_instance(stats, Stats)
 
   local grid_step = screen.height / 10
@@ -49,12 +69,12 @@ function ui._update_labels(screen, stats)
   )
   suit.Label(
     "Now:",
-    ui._create_label_options("left"),
+    ui._create_label_options(fonts.default, "left"),
     suit.layout:row(1.5 * grid_step, 0.75 * grid_step)
   )
   suit.Label(
     tostring(stats.current),
-    ui._create_label_options("right"),
+    ui._create_label_options(fonts.default, "right"),
     suit.layout:col(grid_step, 0.75 * grid_step)
   )
 
@@ -65,49 +85,50 @@ function ui._update_labels(screen, stats)
   )
   suit.Label(
     "Min:",
-    ui._create_label_options("left"),
+    ui._create_label_options(fonts.default, "left"),
     suit.layout:row(1.5 * grid_step, 0.75 * grid_step)
   )
   suit.Label(
     tostring(stats.minimal),
-    ui._create_label_options("right"),
+    ui._create_label_options(fonts.default, "right"),
     suit.layout:col(grid_step, 0.75 * grid_step)
   )
 end
 
 ---
 -- @tparam Rectangle screen
+-- @tparam {[string]=Font,...} fonts
 -- @treturn UiUpdate
-function ui._update_buttons(screen)
+function ui._update_buttons(screen, fonts)
   assertions.is_instance(screen, Rectangle)
-
-  local font_size = screen.height / 25
-  local icon_font = love.graphics.newFont(
-    "resources/fonts/font-awesome/font_awesome_free_7.3.0_solid_900.otf",
-    font_size
-  )
+  assertions.is_table(fonts, checks.is_string, function(font)
+    return type(font) == "userdata"
+  end)
 
   local grid_step = screen.height / 10
   suit.layout:reset(screen.x + grid_step, screen.y + grid_step)
 
   local reset_button = suit.Button(
     icons.RESET_ICON,
-    { font = icon_font },
+    { font = fonts.icons },
     suit.layout:row(grid_step, grid_step)
   )
   return UiUpdate:new(reset_button.hit)
 end
 
 ---
+-- @tparam Font font
 -- @tparam "left"|"right" align
 -- @treturn tab common SUIT widget options
-function ui._create_label_options(align)
+function ui._create_label_options(font, align)
+  assertions.is_true(type(font) == "userdata")
   assertions.is_enumeration(align, {"left", "right"})
 
   return {
-    color = {normal = {fg = {1, 1, 1}}},
+    font = font,
     align = align,
     valign = "top",
+    color = { normal = { fg = {1, 1, 1} } },
   }
 end
 
