@@ -1,6 +1,6 @@
 name = "tangled-stones"
 love_files = ["::git-ls-tree::"] # all files tracked by git
-default_targets = ["win64", "macos", "appimage"]
+default_targets = ["win64", "macos", "appimage", "lovejs"]
 build_directory = "builds"
 
 [windows]
