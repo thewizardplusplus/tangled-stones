@@ -42,7 +42,7 @@ function StatsStorage:initialize(path, initial_minimal)
   self._path = path
   self._stats = stats
 
-  self:reset()
+  self._stats:reset()
 end
 
 ---
@@ -52,31 +52,13 @@ function StatsStorage:stats()
 end
 
 ---
--- @function increment
-function StatsStorage:increment()
-  self._stats.current = self._stats.current + 1
-end
-
----
--- @function reset
-function StatsStorage:reset()
-  self._stats.current = 0
-end
-
----
--- @function finish
-function StatsStorage:finish()
-  if self._stats.minimal > self._stats.current then
-    self._stats.minimal = self._stats.current
-
-    local ok, err =
-      json.save_to_json(self._path, self._stats, love.filesystem.write)
-    if not ok then
-      print("unable to save the stats: " .. err)
-    end
+-- @function save
+function StatsStorage:save()
+  local ok, err =
+    json.save_to_json(self._path, self._stats, love.filesystem.write)
+  if not ok then
+    print("unable to save the stats: " .. err)
   end
-
-  self:reset()
 end
 
 return StatsStorage

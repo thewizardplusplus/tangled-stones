@@ -51,3 +51,35 @@ function TestStats.test_tostring()
   luaunit.assert_is_string(text)
   luaunit.assert_equals(text, "{__name = \"Stats\",current = 42,minimal = 23}")
 end
+
+function TestStats.test_increment()
+  local stats = Stats:new(42, 23)
+
+  local increment_count = 12
+  for _ = 1, increment_count do
+    stats:increment()
+  end
+
+  luaunit.assert_equals(stats.current, 42 + increment_count)
+  luaunit.assert_equals(stats.minimal, 23)
+end
+
+function TestStats.test_finish_with_new_minimal()
+  local stats = Stats:new(23, 42)
+
+  local was_updated = stats:finish()
+
+  luaunit.assert_is_true(was_updated)
+  luaunit.assert_equals(stats.current, 0)
+  luaunit.assert_equals(stats.minimal, 23)
+end
+
+function TestStats.test_finish_without_new_minimal()
+  local stats = Stats:new(42, 23)
+
+  local was_updated = stats:finish()
+
+  luaunit.assert_is_false(was_updated)
+  luaunit.assert_equals(stats.current, 0)
+  luaunit.assert_equals(stats.minimal, 23)
+end

@@ -76,4 +76,28 @@ end
 -- @treturn string stringified table with instance fields
 --   (see the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library)
 
+---
+-- @function increment
+function Stats:increment()
+  self.current = self.current + 1
+end
+
+---
+-- @function reset
+function Stats:reset()
+  self.current = 0
+end
+
+---
+-- @treturn bool whether the minimal move count was updated
+function Stats:finish()
+  local was_updated = self.minimal > self.current
+  if was_updated then
+    self.minimal = self.current
+  end
+
+  self:reset()
+  return was_updated
+end
+
 return Stats
