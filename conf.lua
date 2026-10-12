@@ -3,6 +3,10 @@ local require_paths =
 love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local assertions = require("luatypechecks.assertions")
+local Size = require("luamath.models.size")
+
+local _SCREEN_WIDTH = 640
+local _SCREEN_ASPECT_RATIO = 16 / 10
 
 local function _set_title(config, title)
   assertions.is_table(config)
@@ -12,14 +16,13 @@ local function _set_title(config, title)
   config.identity = string.lower(title)
 end
 
-local function _set_screen_width(config, width, aspect_ratio, prefix)
+local function _set_screen_size(config, size, prefix)
   assertions.is_table(config)
-  assertions.is_number(width)
-  assertions.is_number(aspect_ratio)
+  assertions.is_instance(size, Size)
   assertions.is_string(prefix)
 
-  config.window[prefix .. "width"] = width
-  config.window[prefix .. "height"] = width / aspect_ratio
+  config.window[prefix .. "width"] = size.width
+  config.window[prefix .. "height"] = size.height
 end
 
 function love.conf(config)
@@ -30,8 +33,10 @@ function love.conf(config)
   config.window.resizable = true
   config.window.msaa = 8
 
+  local screen_size =
+    Size:new(_SCREEN_WIDTH, _SCREEN_WIDTH / _SCREEN_ASPECT_RATIO)
   _set_title(config, "Tangled Stones")
   for _, prefix in ipairs({"", "min"}) do
-    _set_screen_width(config, 640, 16 / 10, prefix)
+    _set_screen_size(config, screen_size, prefix)
   end
 end
