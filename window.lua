@@ -1,7 +1,9 @@
 ---
 -- @module window
 
-local Rectangle = require("models.rectangle")
+local Vector2D = require("luamath.vector2d")
+local Size = require("luamath.models.size")
+local BoundingBox = require("luamath.models.boundingbox")
 
 local window = {}
 
@@ -23,10 +25,13 @@ function window.enter_fullscreen()
 end
 
 ---
--- @treturn Rectangle
+-- @treturn BoundingBox
 function window.create_screen()
   local x, y, width, height = love.window.getSafeArea()
-  return Rectangle:new(x, y, width, height)
+  return BoundingBox.from_position_and_size(
+    Vector2D:new(x, y),
+    Size:new(width, height)
+  )
 end
 
 return window
