@@ -2,10 +2,12 @@
 -- @classmod StoneGroup
 
 local middleclass = require("middleclass")
-local mlib = require("mlib")
 local assertions = require("luatypechecks.assertions")
 local checks = require("luatypechecks.checks")
-local Rectangle = require("models.rectangle")
+local Vector2D = require("luamath.vector2d")
+local Matrix3x3 = require("luamath.matrix3x3")
+local Size = require("luamath.models.size")
+local BoundingBox = require("luamath.models.boundingbox")
 local Selection = require("models.selection")
 local BorderGroup = require("groups.bordergroup")
 local physics = require("physics")
@@ -23,29 +25,30 @@ local StoneGroup = middleclass("StoneGroup")
 -- @function _make_stones
 -- @static
 -- @tparam windfield.World world
--- @tparam Rectangle screen
+-- @tparam BoundingBox screen
 -- @tparam number side_count [0, ∞)
 -- @tparam number grid_step [0, screen.height]
 -- @treturn {windfield.Collider,...} stones
 -- @treturn {[windfield.Collider]=bool,...} stone index
 function StoneGroup.static._make_stones(world, screen, side_count, grid_step)
   assertions.is_table(world)
-  assertions.is_instance(screen, Rectangle)
+  assertions.is_instance(screen, BoundingBox)
   assertions.is_number(side_count)
   assertions.is_number(grid_step)
 
   local stones = {}
   local stone_index = {}
-  local offset_x = screen.x + screen.width / 2 - side_count * grid_step / 2
-  local offset_y = screen.y + screen.height / 2 - side_count * grid_step / 2
+  local stone_size = Size:new(grid_step, grid_step)
+  local stone_group_size = stone_size * side_count
+  local stone_group_transform =
+    Matrix3x3.translate(screen:center() - stone_group_size / 2)
+    * Matrix3x3.scale(grid_step)
   for row = 0, side_count - 1 do
     for column = 0, side_count - 1 do
-      local stone = physics.make_collider(world, "static", Rectangle:new(
-        offset_x + column * grid_step,
-        offset_y + row * grid_step,
-        grid_step,
-        grid_step
-      ))
+      local position = Vector2D:new(column, row) * stone_group_transform
+      local bounding_box =
+        BoundingBox.from_position_and_size(position, stone_size)
+      local stone = physics.make_collider(world, "static", bounding_box)
       table.insert(stones, stone)
       stone_index[stone] = true
     end
@@ -74,15 +77,15 @@ function StoneGroup.static._make_joints(world, stones)
       return
     end
 
-    local x1, y1 = prev_stone:getPosition()
-    local x2, y2 = stone:getPosition()
+    local start = Vector2D:new(prev_stone:getPosition())
+    local finish = Vector2D:new(stone:getPosition())
     world:addJoint(
       "RopeJoint",
       prev_stone,
       stone,
-      x1, y1,
-      x2, y2,
-      mlib.line.getLength(x1, y1, x2, y2),
+      start.x, start.y,
+      finish.x, finish.y,
+      (finish - start):length(),
       true
     )
 
@@ -98,16 +101,17 @@ end
 ---
 -- @function new
 -- @tparam windfield.World world
--- @tparam Rectangle screen
+-- @tparam BoundingBox screen
 -- @tparam number side_count [0, ∞)
 -- @treturn StoneGroup
 function StoneGroup:initialize(world, screen, side_count)
   assertions.is_table(world)
-  assertions.is_instance(screen, Rectangle)
+  assertions.is_instance(screen, BoundingBox)
   assertions.is_number(side_count)
 
   local border_size = BorderGroup.border_size(screen)
-  self._grid_step = (screen.height - 2 * border_size) / (side_count + 3)
+  self._grid_step =
+    (screen:y_range():length() - 2 * border_size) / (side_count + 3)
   self._stones, self._stone_index =
     StoneGroup._make_stones(world, screen, side_count, self._grid_step)
   table.shuffle(self._stones)
@@ -116,9 +120,9 @@ function StoneGroup:initialize(world, screen, side_count)
 end
 
 ---
--- @treturn number [0, ∞)
+-- @treturn Size
 function StoneGroup:stone_size()
-  return self._grid_step
+  return Size:new(self._grid_step, self._grid_step)
 end
 
 ---
@@ -134,19 +138,22 @@ end
 
 ---
 -- @tparam windfield.World world
--- @tparam number x [0, ∞)
--- @tparam number y [0, ∞)
-function StoneGroup:select_stones(world, x, y)
+-- @tparam Vector2D position
+function StoneGroup:select_stones(world, position)
   assertions.is_table(world)
-  assertions.is_number(x)
-  assertions.is_number(y)
+  assertions.is_instance(position, Vector2D)
 
   local primary_stone = nil
   local minimal_distance = math.huge
-  local colliders = world:queryCircleArea(x, y, 1.5 * self._grid_step / 2)
+  local colliders = world:queryCircleArea(
+    position.x,
+    position.y,
+    1.5 * self._grid_step / 2
+  )
   for _, collider in ipairs(colliders) do
     if self._stone_index[collider] then
-      local distance = mlib.line.getLength(x, y, collider:getPosition())
+      local collider_position = Vector2D:new(collider:getPosition())
+      local distance = (collider_position - position):length()
       if distance < minimal_distance then
         primary_stone = collider
         minimal_distance = distance
@@ -164,11 +171,11 @@ end
 
 ---
 -- @tparam windfield.World world
--- @tparam Rectangle screen
+-- @tparam BoundingBox screen
 -- @tparam number side_count [0, ∞)
 function StoneGroup:reset(world, screen, side_count)
   assertions.is_table(world)
-  assertions.is_instance(screen, Rectangle)
+  assertions.is_instance(screen, BoundingBox)
   assertions.is_number(side_count)
 
   physics.process_colliders(self._stones, function(stone)
