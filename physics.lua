@@ -3,25 +3,27 @@
 
 local assertions = require("luatypechecks.assertions")
 local checks = require("luatypechecks.checks")
-local Rectangle = require("models.rectangle")
+local BoundingBox = require("luamath.models.boundingbox")
 
 local physics = {}
 
 ---
 -- @tparam windfield.World world
 -- @tparam "static"|"dynamic" kind
--- @tparam Rectangle rectangle
+-- @tparam BoundingBox bounding_box
 -- @treturn windfield.Collider
-function physics.make_collider(world, kind, rectangle)
+function physics.make_collider(world, kind, bounding_box)
   assertions.is_table(world)
   assertions.is_enumeration(kind, {"static", "dynamic"})
-  assertions.is_instance(rectangle, Rectangle)
+  assertions.is_instance(bounding_box, BoundingBox)
 
+  local position = bounding_box:position()
+  local size = bounding_box:size()
   local collider = world:newRectangleCollider(
-    rectangle.x,
-    rectangle.y,
-    rectangle.width,
-    rectangle.height
+    position.x,
+    position.y,
+    size.width,
+    size.height
   )
   collider:setType(kind)
 
