@@ -11,7 +11,6 @@ file = {
   "ui.lua",
   "models/stats.lua",
   "models/gamesettings.lua",
-  "models/rectangle.lua",
   "models/selection.lua",
   "models/uiupdate.lua",
   "groups/stonegroup.lua",

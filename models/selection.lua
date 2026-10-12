@@ -3,6 +3,7 @@
 
 local middleclass = require("middleclass")
 local assertions = require("luatypechecks.assertions")
+local Vector2D = require("luamath.vector2d")
 local physics = require("physics")
 
 ---
@@ -41,29 +42,30 @@ end
 
 ---
 -- @tparam windfield.World world
--- @tparam number x [0, ∞)
--- @tparam number y [0, ∞)
-function Selection:activate(world, x, y)
+-- @tparam Vector2D position
+function Selection:activate(world, position)
   assertions.is_table(world)
-  assertions.is_number(x)
-  assertions.is_number(y)
+  assertions.is_instance(position, Vector2D)
 
   self:_set_kind("dynamic")
 
   if self.primary_stone then
-    self._stone_joint = world:addJoint("MouseJoint", self.primary_stone, x, y)
+    self._stone_joint = world:addJoint(
+      "MouseJoint",
+      self.primary_stone,
+      position.x,
+      position.y
+    )
   end
 end
 
 ---
--- @tparam number x [0, ∞)
--- @tparam number y [0, ∞)
-function Selection:update(x, y)
-  assertions.is_number(x)
-  assertions.is_number(y)
+-- @tparam Vector2D position
+function Selection:update(position)
+  assertions.is_instance(position, Vector2D)
 
   if self._stone_joint then
-    self._stone_joint:setTarget(x, y)
+    self._stone_joint:setTarget(position.x, position.y)
   end
 end
 
