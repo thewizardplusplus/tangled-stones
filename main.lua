@@ -5,6 +5,7 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 local windfield = require("windfield")
 local assertions = require("luatypechecks.assertions")
 local json = require("luaserialization.json")
+local Vector2D = require("luamath.vector2d")
 local GameSettings = require("models.gamesettings")
 local BorderGroup = require("groups.bordergroup")
 local StoneGroup = require("groups.stonegroup")
@@ -15,7 +16,7 @@ local physics = require("physics")
 require("luatable")
 
 local world = nil -- windfield.World
-local screen = nil -- models.Rectangle
+local screen = nil -- luamath.models.BoundingBox
 local fonts = nil -- {[string]=Font,...}
 local settings = nil -- models.GameSettings
 local stones = nil -- groups.StoneGroup
@@ -71,7 +72,7 @@ function love.update(dt)
   assertions.is_number(dt)
 
   if selection then
-    selection:update(love.mouse.getPosition())
+    selection:update(Vector2D:new(love.mouse.getPosition()))
   end
   world:update(dt)
 
@@ -106,8 +107,9 @@ function love.mousepressed(x, y)
     return
   end
 
-  selection = stones:select_stones(world, x, y)
-  selection:activate(world, x, y)
+  local position = Vector2D:new(x, y)
+  selection = stones:select_stones(world, position)
+  selection:activate(world, position)
 end
 
 function love.mousereleased()
