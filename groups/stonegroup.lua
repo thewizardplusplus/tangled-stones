@@ -12,13 +12,6 @@ local Selection = require("models.selection")
 local BorderGroup = require("groups.bordergroup")
 local physics = require("physics")
 
----
--- @table instance
--- @tfield number _grid_step
--- @tfield {windfield.Collider,...} _stones
--- @tfield {[windfield.Collider]=bool,...} _stone_index
--- @tfield {[windfield.Collider]=windfield.Collider,...} _stone_pairs
-
 local StoneGroup = middleclass("StoneGroup")
 
 ---
@@ -97,6 +90,13 @@ function StoneGroup.static._make_joints(world, stones)
 
   return stone_pairs
 end
+
+---
+-- @table instance
+-- @tfield number _grid_step
+-- @tfield {windfield.Collider,...} _stones
+-- @tfield {[windfield.Collider]=bool,...} _stone_index
+-- @tfield {[windfield.Collider]=windfield.Collider,...} _stone_pairs
 
 ---
 -- @function new

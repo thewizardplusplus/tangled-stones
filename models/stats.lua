@@ -8,11 +8,6 @@ local assertions = require("luatypechecks.assertions")
 local Nameable = require("luaserialization.nameable")
 local Stringifiable = require("luaserialization.stringifiable")
 
----
--- @table instance
--- @tfield number current [0, ∞)
--- @tfield number minimal [0, ∞)
-
 local Stats = middleclass("Stats")
 Stats:include(Nameable)
 Stats:include(Stringifiable)
@@ -47,6 +42,11 @@ function Stats.static.from_options(options)
 
   return Stats:new(options.current, options.minimal)
 end
+
+---
+-- @table instance
+-- @tfield number current [0, ∞)
+-- @tfield number minimal [0, ∞)
 
 ---
 -- @function new

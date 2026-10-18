@@ -6,13 +6,13 @@ local assertions = require("luatypechecks.assertions")
 local Vector2D = require("luamath.vector2d")
 local physics = require("physics")
 
+local Selection = middleclass("Selection")
+
 ---
 -- @table instance
 -- @tfield windfield.Collider primary_stone
 -- @tfield windfield.Collider secondary_stone
 -- @tfield Joint _stone_joint
-
-local Selection = middleclass("Selection")
 
 ---
 -- @function new

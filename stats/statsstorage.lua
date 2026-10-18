@@ -6,12 +6,12 @@ local assertions = require("luatypechecks.assertions")
 local json = require("luaserialization.json")
 local Stats = require("models.stats")
 
+local StatsStorage = middleclass("StatsStorage")
+
 ---
 -- @table instance
 -- @tfield string _path
 -- @tfield Stats _stats
-
-local StatsStorage = middleclass("StatsStorage")
 
 ---
 -- @function new
