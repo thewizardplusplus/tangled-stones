@@ -4,12 +4,11 @@ love.filesystem.setRequirePath(table.concat(require_paths, ";"))
 
 local windfield = require("windfield")
 local assertions = require("luatypechecks.assertions")
-local json = require("luaserialization.json")
 local Vector2D = require("luamath.vector2d")
-local GameSettings = require("models.gamesettings")
 local BorderGroup = require("groups.bordergroup")
 local StoneGroup = require("groups.stonegroup")
-local StatsStorage = require("stats.statsstorage")
+local SettingsStorage = require("storages.settingsstorage")
+local StatsStorage = require("storages.statsstorage")
 local window = require("window")
 local ui = require("ui")
 local physics = require("physics")
@@ -18,32 +17,11 @@ require("luatable")
 local world = nil -- windfield.World
 local screen = nil -- luamath.models.BoundingBox
 local fonts = nil -- {[string]=Font,...}
-local settings = nil -- models.GameSettings
 local stones = nil -- groups.StoneGroup
 local borders = nil -- groups.BorderGroup
 local selection = nil -- models.Selection
-local stats_storage = nil -- stats.StatsStorage
-
-local function _load_game_settings(path)
-  assertions.is_string(path)
-
-  local settings, err = json.load_from_json( -- luacheck: no redefined
-    path,
-    GameSettings.schema(),
-    { GameSettings = GameSettings.from_options },
-    function(path) -- luacheck: no redefined
-      assertions.is_string(path)
-
-      local data, err = love.filesystem.read(path)
-      return data, data == nil and err or nil
-    end
-  )
-  if not settings then
-    return nil, "unable to load the game settings: " .. err
-  end
-
-  return settings
-end
+local settings_storage = nil -- storages.SettingsStorage
+local stats_storage = nil -- storages.StatsStorage
 
 function love.load()
   math.randomseed(os.time())
@@ -55,7 +33,9 @@ function love.load()
 
   screen = window.create_screen()
   fonts = ui.load_fonts(screen)
-  settings = assert(_load_game_settings("settings.json"))
+  settings_storage = SettingsStorage:new("settings.json")
+
+  local settings = settings_storage:settings()
   stones = StoneGroup:new(world, screen, settings.side_count)
   borders = BorderGroup:new(world, screen, stones:stone_size())
 
@@ -77,7 +57,7 @@ function love.update(dt)
 
   local update = ui.update(screen, fonts, stats_storage:stats_group():stats())
   if update.reset then
-    stones:reset(world, screen, settings.side_count)
+    stones:reset(world, screen, settings_storage:settings().side_count)
     stats_storage:stats_group():stats():reset()
   end
 end
@@ -85,7 +65,7 @@ end
 function love.resize()
   screen = window.create_screen()
   fonts = ui.load_fonts(screen)
-  stones:reset(world, screen, settings.side_count)
+  stones:reset(world, screen, settings_storage:settings().side_count)
   borders:reset(world, screen, stones:stone_size())
   stats_storage:stats_group():stats():reset()
 end
@@ -126,11 +106,22 @@ function love.mousereleased()
     end
   end)
   if stones:count() == 0 then
-    stones:reset(world, screen, settings.side_count)
-
     local was_updated = stats_storage:stats_group():stats():finish()
     if was_updated then
       stats_storage:save()
+    end
+
+    local settings = settings_storage:settings()
+    if settings.auto_increment_side_count then
+      settings.side_count = settings.side_count + 1
+      settings_storage:save()
+
+      stats_storage:stats_group():set_side_count(settings.side_count)
+    end
+
+    stones:reset(world, screen, settings.side_count)
+    if settings.auto_increment_side_count then
+      borders:reset(world, screen, stones:stone_size())
     end
   end
 end
