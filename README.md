@@ -31,7 +31,7 @@ _**Disclaimer:** this game was written directly on an Android smartphone with th
   - separate stats for each stone grid size;
   - autodetecting an initial minimum of a move count based on a count of stones;
 - game progression:
-  - increasing the stone grid side by one after each completed level;
+  - increasing the stone grid side by one after each completed level, up to a maximum of 20;
   - saving the current grid size between game launches;
   - supporting a fixed grid size via the game setting;
 - initialization:
