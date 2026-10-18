@@ -1,6 +1,6 @@
 CC BY 4.0
 
-Copyright (C) 2020-2021 thewizardplusplus <thewizardplusplus@yandex.ru>
+Copyright (C) 2020-2021, 2026 thewizardplusplus <thewizardplusplus@yandex.ru>
 
 This documentation is licensed under the Creative Commons Attribution 4.0
 International License.

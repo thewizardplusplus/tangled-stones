@@ -6,7 +6,7 @@ This distribution contains code and resources from the following projects (full 
  - Tangled Stones
 	Website: https://github.com/thewizardplusplus/tangled-stones
 	License: MIT/Expat
-	Copyright (C) 2020-2021 thewizardplusplus <thewizardplusplus@yandex.ru>
+	Copyright (C) 2020-2021, 2026 thewizardplusplus <thewizardplusplus@yandex.ru>
 
  - Font Awesome Free
 	Website: https://fontawesome.com/
