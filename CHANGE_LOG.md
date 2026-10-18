@@ -1,5 +1,24 @@
 # Change Log
 
+## [v1.5.7](https://github.com/thewizardplusplus/luaplot/tree/v1.5.7) (2026-10-18)
+
+Improving icon rendering; fixing the minor game bugs; using the `luatypechecks`, `luaserialization`, and `luamath` libraries for type validation, model serialization, and mathematical primitives.
+
+- improve icon rendering and font handling:
+  - use the [Font Awesome](https://fontawesome.com/) font for icons;
+  - cache the loaded fonts;
+- fix the minor game bugs:
+  - fix the bug with creating multiple selections at the same time;
+  - take the border into account when calculating the stone size;
+- refactoring:
+  - replacing the internal `typeutils` package with the [luatypechecks](https://github.com/thewizardplusplus/luatypechecks) library;
+  - replacing the MLib library with the [luamath](https://github.com/thewizardplusplus/luamath) library;
+  - adding the [luaserialization](https://github.com/thewizardplusplus/luaserialization) library;
+- misc.:
+  - adding GitHub Actions workflows for tests, linting, and documentation deployment;
+  - supporting Lua 5.1, 5.2, 5.3, 5.4, 5.5, and LuaJIT;
+  - improving the generated documentation.
+
 ## [v1.5.6](https://github.com/thewizardplusplus/tangled-stones/tree/v1.5.6) (2021-04-22)
 
 - describe the game documentation:
