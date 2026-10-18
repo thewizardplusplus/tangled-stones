@@ -8,13 +8,13 @@ local assertions = require("luatypechecks.assertions")
 local Nameable = require("luaserialization.nameable")
 local Stringifiable = require("luaserialization.stringifiable")
 
----
--- @table instance
--- @tfield bool reset
-
 local UiUpdate = middleclass("UiUpdate")
 UiUpdate:include(Nameable)
 UiUpdate:include(Stringifiable)
+
+---
+-- @table instance
+-- @tfield bool reset
 
 ---
 -- @function new

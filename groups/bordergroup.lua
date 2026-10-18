@@ -9,11 +9,6 @@ local Range = require("luamath.models.range")
 local BoundingBox = require("luamath.models.boundingbox")
 local physics = require("physics")
 
----
--- @table instance
--- @tfield Range _vertical_range
--- @tfield {windfield.Collider,...} _borders
-
 local BorderGroup = middleclass("BorderGroup")
 
 ---
@@ -45,6 +40,11 @@ function BorderGroup.static._make_border(world, screen, position, size)
     BoundingBox.from_position_and_size(screen:position() + position, size)
   return physics.make_collider(world, "static", bounding_box)
 end
+
+---
+-- @table instance
+-- @tfield Range _vertical_range
+-- @tfield {windfield.Collider,...} _borders
 
 ---
 -- @function new

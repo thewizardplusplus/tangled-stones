@@ -8,10 +8,6 @@ local assertions = require("luatypechecks.assertions")
 local Nameable = require("luaserialization.nameable")
 local Stringifiable = require("luaserialization.stringifiable")
 
----
--- @table instance
--- @tfield number side_count
-
 local GameSettings = middleclass("GameSettings")
 GameSettings:include(Nameable)
 GameSettings:include(Stringifiable)
@@ -41,6 +37,10 @@ function GameSettings.static.from_options(options)
 
   return GameSettings:new(options.side_count)
 end
+
+---
+-- @table instance
+-- @tfield number side_count
 
 ---
 -- @function new
