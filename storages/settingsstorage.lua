@@ -29,6 +29,12 @@ function SettingsStorage:initialize(path)
     function(path) -- luacheck: no redefined
       assertions.is_string(path)
 
+      -- `love.js` crashes when reading a non-existent file, so check it first
+      -- (see https://github.com/Davidobot/love.js#notes, item 6)
+      if love.filesystem.getInfo(path, "file") == nil then
+        return nil, "file does not exist"
+      end
+
       local data, err = love.filesystem.read(path)
       return data, data == nil and err or nil
     end
