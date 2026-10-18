@@ -10,11 +10,11 @@ build_directory = "builds"
 [windows.exe_metadata]
 CompanyName = "Personal"
 LegalCopyright = "Copyright (C) 2020-2021, 2026 thewizardplusplus <thewizardplusplus@yandex.ru>"
-FileVersion = "v1.5.6"
-FileDescription = "tangled-stones v1.5.6"
+FileVersion = "v1.5.7"
+FileDescription = "tangled-stones v1.5.7"
 
 [macos]
 [macos.app_metadata]
 CFBundleIdentifier = "ru.thewizardplusplus.tangled-stones" # should be in reverse-DNS format
-CFBundleShortVersionString = "v1.5.6"
+CFBundleShortVersionString = "v1.5.7"
 NSHumanReadableCopyright = "Copyright (C) 2020-2021, 2026 thewizardplusplus <thewizardplusplus@yandex.ru>"
