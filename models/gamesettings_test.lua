@@ -10,7 +10,7 @@ function TestGameSettings.test_from_json_success()
   local settings, err = json.from_json(
     [[{
       "__name": "GameSettings",
-      "side_count": 23,
+      "side_count": 5,
       "auto_increment_side_count": true
     }]],
     GameSettings.schema(),
@@ -21,7 +21,7 @@ function TestGameSettings.test_from_json_success()
   luaunit.assert_is_true(checks.is_instance(settings, GameSettings))
 
   luaunit.assert_is_number(settings.side_count)
-  luaunit.assert_equals(settings.side_count, 23)
+  luaunit.assert_equals(settings.side_count, 5)
 
   luaunit.assert_is_boolean(settings.auto_increment_side_count)
   luaunit.assert_is_true(settings.auto_increment_side_count)
@@ -62,4 +62,32 @@ function TestGameSettings.test_tostring()
     "auto_increment_side_count = true," ..
     "side_count = 23" ..
   "}")
+end
+
+function TestGameSettings.test_increment_side_count()
+  local settings = GameSettings:new(GameSettings.MAX_SIDE_COUNT - 1, true)
+
+  local was_incremented = settings:increment_side_count()
+
+  luaunit.assert_true(was_incremented)
+  luaunit.assert_equals(settings.side_count, GameSettings.MAX_SIDE_COUNT)
+end
+
+function TestGameSettings.test_increment_side_count_at_maximum()
+  local settings = GameSettings:new(GameSettings.MAX_SIDE_COUNT, true)
+
+  local was_incremented = settings:increment_side_count()
+
+  luaunit.assert_false(was_incremented)
+  luaunit.assert_equals(settings.side_count, GameSettings.MAX_SIDE_COUNT)
+end
+
+function TestGameSettings.test_increment_side_count_when_disabled()
+  local side_count = 5
+  local settings = GameSettings:new(side_count, false)
+
+  local was_incremented = settings:increment_side_count()
+
+  luaunit.assert_false(was_incremented)
+  luaunit.assert_equals(settings.side_count, side_count)
 end
