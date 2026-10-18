@@ -38,38 +38,59 @@ end
 ---
 -- @tparam BoundingBox screen
 -- @tparam {[string]=Font,...} fonts
+-- @tparam int side_count [1, ∞)
 -- @tparam Stats stats
 -- @treturn UiUpdate
-function ui.update(screen, fonts, stats)
+function ui.update(screen, fonts, side_count, stats)
   assertions.is_instance(screen, BoundingBox)
   assertions.is_table(fonts, checks.is_string, function(font)
     return type(font) == "userdata"
   end)
+  assertions.is_integer(side_count)
   assertions.is_instance(stats, Stats)
 
-  ui._update_labels(screen, fonts, stats)
+  ui._update_labels(screen, fonts, side_count, stats)
   return ui._update_buttons(screen, fonts)
 end
 
 ---
 -- @tparam BoundingBox screen
 -- @tparam {[string]=Font,...} fonts
+-- @tparam int side_count [1, ∞)
 -- @tparam Stats stats
-function ui._update_labels(screen, fonts, stats)
+function ui._update_labels(screen, fonts, side_count, stats)
   assertions.is_instance(screen, BoundingBox)
   assertions.is_table(fonts, checks.is_string, function(font)
     return type(font) == "userdata"
   end)
+  assertions.is_integer(side_count)
   assertions.is_instance(stats, Stats)
 
   local grid_step = screen:y_range():length() / 10
-  local label_size = Size:new(1.5 * grid_step, 0.75 * grid_step)
-  local value_size = Size:new(grid_step, 0.75 * grid_step)
+  local label_size = Size:new(1.25 * grid_step, 0.75 * grid_step)
+  local value_size = Size:new(1.125 * grid_step, 0.75 * grid_step)
+
+  -- level size
+  local level_size_position = screen:position() + Vector2D:new(
+    screen:x_range():length() - 3.375 * grid_step,
+    grid_step
+  )
+  suit.layout:reset(level_size_position.x, level_size_position.y)
+  suit.Label(
+    "Size:",
+    ui._create_label_options(fonts.default, "left"),
+    suit.layout:row(label_size.width, label_size.height)
+  )
+  suit.Label(
+    side_count,
+    ui._create_label_options(fonts.default, "right"),
+    suit.layout:col(value_size.width, value_size.height)
+  )
 
   -- current stats
   local current_stats_position = screen:position() + Vector2D:new(
-    screen:x_range():length() - 3.5 * grid_step,
-    grid_step
+    screen:x_range():length() - 3.375 * grid_step,
+    1.75 * grid_step
   )
   suit.layout:reset(current_stats_position.x, current_stats_position.y)
   suit.Label(
@@ -85,8 +106,8 @@ function ui._update_labels(screen, fonts, stats)
 
   -- minimal stats
   local minimal_stats_position = screen:position() + Vector2D:new(
-    screen:x_range():length() - 3.5 * grid_step,
-    1.75 * grid_step
+    screen:x_range():length() - 3.375 * grid_step,
+    2.5 * grid_step
   )
   suit.layout:reset(minimal_stats_position.x, minimal_stats_position.y)
   suit.Label(
