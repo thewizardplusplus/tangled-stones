@@ -8,7 +8,7 @@
 
 The game field is represented by a set of square stones. The stones are arranged in the center of the field close to each other in the form of a square grid.
 
-Every two stones except for one (the number of the stones is odd) are connected to each other by a rope. The pairing of the stones is random.
+Every two stones are connected to each other by a rope. (If the total number of stones is odd, one stone remains unpaired.) The pairing of the stones is random.
 
 The game field is limited by a barrier. There is a hole in the center of the bottom side of the barrier.
 
@@ -21,6 +21,14 @@ By default, all the stones are frozen, i.e. they cannot move. When the player in
 The rope connecting the stones is indestructible. Its length can decrease, but it cannot increase. The connected stones cannot be further apart than when they were created, but they can be closer.
 
 If a stone is moved outside the barrier, it is removed from the game field.
+
+## Levels and Grid Size
+
+A level is completed when all stones have been removed from the game field. The game then creates a new grid.
+
+By default, the first level has one stone. After each completed level, the number of stones along each side of the grid increases by one. The current grid size is saved and restored on the next game launch.
+
+This behavior is controlled by the settings and is enabled by default. If it is disabled, every new level uses the same grid size.
 
 ## Game Goal and Statistics
 
