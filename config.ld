@@ -10,6 +10,7 @@ file = {
   "physics.lua",
   "ui.lua",
   "models/stats.lua",
+  "models/statsgroup.lua",
   "models/gamesettings.lua",
   "models/selection.lua",
   "models/uiupdate.lua",

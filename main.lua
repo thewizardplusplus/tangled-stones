@@ -59,8 +59,7 @@ function love.load()
   stones = StoneGroup:new(world, screen, settings.side_count)
   borders = BorderGroup:new(world, screen, stones:stone_size())
 
-  local initial_stats_minimal = math.pow(settings.side_count, 2) * 10
-  stats_storage = StatsStorage:new("stats.json", initial_stats_minimal)
+  stats_storage = StatsStorage:new("stats.json", settings.side_count)
 end
 
 function love.draw()
@@ -76,10 +75,10 @@ function love.update(dt)
   end
   world:update(dt)
 
-  local update = ui.update(screen, fonts, stats_storage:stats())
+  local update = ui.update(screen, fonts, stats_storage:stats_group():stats())
   if update.reset then
     stones:reset(world, screen, settings.side_count)
-    stats_storage:stats():reset()
+    stats_storage:stats_group():stats():reset()
   end
 end
 
@@ -88,7 +87,7 @@ function love.resize()
   fonts = ui.load_fonts(screen)
   stones:reset(world, screen, settings.side_count)
   borders:reset(world, screen, stones:stone_size())
-  stats_storage:stats():reset()
+  stats_storage:stats_group():stats():reset()
 end
 
 function love.keypressed(key)
@@ -116,7 +115,7 @@ function love.mousereleased()
   selection:deactivate()
 
   if selection.primary_stone then
-    stats_storage:stats():increment()
+    stats_storage:stats_group():stats():increment()
   end
 
   physics.process_colliders(selection:stones(), function(stone)
@@ -129,7 +128,7 @@ function love.mousereleased()
   if stones:count() == 0 then
     stones:reset(world, screen, settings.side_count)
 
-    local was_updated = stats_storage:stats():finish()
+    local was_updated = stats_storage:stats_group():stats():finish()
     if was_updated then
       stats_storage:save()
     end

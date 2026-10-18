@@ -1,3 +1,5 @@
+-- luacheck: no max comment line length
+
 ---
 -- @classmod StatsStorage
 
@@ -5,27 +7,31 @@ local middleclass = require("middleclass")
 local assertions = require("luatypechecks.assertions")
 local json = require("luaserialization.json")
 local Stats = require("models.stats")
+local StatsGroup = require("models.statsgroup")
 
 local StatsStorage = middleclass("StatsStorage")
 
 ---
 -- @table instance
 -- @tfield string _path
--- @tfield Stats _stats
+-- @tfield StatsGroup _stats_group
 
 ---
 -- @function new
 -- @tparam string path
--- @tparam number initial_minimal [0, ∞)
+-- @tparam int side_count [1, ∞)
 -- @treturn StatsStorage
-function StatsStorage:initialize(path, initial_minimal)
+function StatsStorage:initialize(path, side_count)
   assertions.is_string(path)
-  assertions.is_number(initial_minimal)
+  assertions.is_integer(side_count)
 
-  local stats, err = json.load_from_json(
+  local stats_group, err = json.load_from_json(
     path,
-    Stats.schema(),
-    { Stats = Stats.from_options },
+    StatsGroup.schema(),
+    {
+      Stats = Stats.from_options,
+      StatsGroup = StatsGroup.from_options,
+    },
     function(path) -- luacheck: no redefined
       assertions.is_string(path)
 
@@ -33,29 +39,31 @@ function StatsStorage:initialize(path, initial_minimal)
       return data, data == nil and err or nil
     end
   )
-  if not stats then
+  if not stats_group then
     print("unable to load the stats: " .. err)
 
-    stats = Stats:new(0, initial_minimal)
+    stats_group = StatsGroup:new(side_count)
+  else
+    stats_group:set_side_count(side_count)
   end
 
   self._path = path
-  self._stats = stats
+  self._stats_group = stats_group
 
-  self._stats:reset()
+  self._stats_group:stats():reset()
 end
 
 ---
--- @treturn Stats
-function StatsStorage:stats()
-  return self._stats
+-- @treturn StatsGroup
+function StatsStorage:stats_group()
+  return self._stats_group
 end
 
 ---
 -- @function save
 function StatsStorage:save()
   local ok, err =
-    json.save_to_json(self._path, self._stats, love.filesystem.write)
+    json.save_to_json(self._path, self._stats_group, love.filesystem.write)
   if not ok then
     print("unable to save the stats: " .. err)
   end
